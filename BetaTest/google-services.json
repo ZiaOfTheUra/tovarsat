@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "10497829788",
+    "project_id": "tovartest2",
+    "storage_bucket": "tovartest2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10497829788:android:486506efde2195d212b659",
+        "android_client_info": {
+          "package_name": "com.TovarSat.Alpha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLlHWYoDw5Di6_NUKikpcqBUP-xa--44Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

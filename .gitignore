@@ -98,7 +98,6 @@ expo-env.d.ts
 Thumbs.db
 
 # Firebase sensitive files
-google-services.json
 GoogleService-Info.plist
 
 # Compressed archives (large files)
