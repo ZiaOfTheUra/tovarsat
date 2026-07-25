@@ -1,0 +1,386 @@
+# Queries de ejemplo para el sistema de gestión TovarSat.
+# Adaptado de la estructura de ejemplo para una app de reseñas de películas.
+# Comentarios en español explicando el propósito y nivel de acceso de cada operación.
+
+# Las directivas @auth() controlan quién puede llamar cada operación.
+# Cualquier persona debería poder listar las sedes, así que el nivel de acceso es PUBLIC.
+query ListarSedes @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar las sedes.") {
+  sedes {
+    id
+    nombre
+    direccion
+    telefono
+    contacto
+  }
+}
+
+# Listar todos los usuarios. Solo los administradores deberían poder ver esta información,
+# por lo que se usa NO_ACCESS.
+query ListarUsuarios @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP. Proteger con roles en producción.") {
+  usuarios {
+    id
+    nombre
+    apellido
+    cedula
+    fechaNacimiento
+    cargo
+    nivelAdministrativo
+    hashBiometrico
+    permisosDB
+    email
+    rol
+    activo
+    sede {
+      id
+      nombre
+    }
+  }
+}
+
+# Los usuarios autenticados pueden listar sus propias asistencias y datos personales.
+# Dado que la query usa el UID del usuario autenticado, se establece el nivel USER.
+query ListarMisAsistencias @auth(level: USER) {
+  usuario(key: { id_expr: "auth.uid" }) {
+    id
+    nombre
+    apellido
+    cedula
+    cargo
+    # <campo>_on_<clave_foranea> facilita obtener información de otra tabla.
+    # Aquí se usa para obtener todas las asistencias del usuario.
+    asistencias: asistencias_on_usuario {
+      fecha
+      horaEntradaManana
+      horaSalidaManana
+      horaEntradaTarde
+      horaSalidaTarde
+    }
+  }
+}
+
+# Obtener un usuario por ID con todos sus datos y asistencias.
+query ObtenerUsuarioPorId($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede obtener información de un usuario por ID.") {
+  usuario(id: $id) {
+    id
+    nombre
+    apellido
+    cedula
+    fechaNacimiento
+    cargo
+    nivelAdministrativo
+    hashBiometrico
+    permisosDB
+    email
+    rol
+    activo
+    sede {
+      id
+      nombre
+      direccion
+    }
+    asistencias: asistencias_on_usuario {
+      fecha
+      horaEntradaManana
+      horaSalidaManana
+      horaEntradaTarde
+      horaSalidaTarde
+    }
+  }
+}
+
+# Listar todos los tipos de equipo disponibles.
+query ListarTiposEquipo @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar los tipos de equipo.") {
+  tipoEquipos {
+    id
+    nombreTipo
+    descripcion
+    modelo
+    anchoBanda
+    canales
+    tecnologiaRelevante
+  }
+}
+
+# Listar equipos en inventario con su tipo de equipo y ubicación actual.
+# Se usan los campos _on_ para resolver las relaciones.
+query ListarEquiposInventario @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar los equipos en inventario.") {
+  equipoInventarios {
+    id
+    modelo
+    nombreDescriptivo
+    valor
+    cantidadDisponible
+    serial
+    estado
+    # Información del tipo de equipo asociado vía la relación tipoEquipoModelo.
+    tipoEquipo: tipoEquipoModelo {
+      nombreTipo
+      modelo
+      tecnologiaRelevante
+    }
+    # Información de la sede donde se encuentra el equipo.
+    ubicacion: ubicacionActual {
+      nombre
+      direccion
+    }
+  }
+}
+
+# Obtener un equipo de inventario por ID con todos sus detalles y relaciones.
+query ObtenerEquipoPorId($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede obtener un equipo por ID.") {
+  equipoInventario(id: $id) {
+    id
+    modelo
+    nombreDescriptivo
+    valor
+    cantidadDisponible
+    serial
+    estado
+    tipoEquipo: tipoEquipoModelo {
+      nombreTipo
+      descripcion
+      modelo
+      anchoBanda
+      canales
+      tecnologiaRelevante
+    }
+    ubicacion: ubicacionActual {
+      nombre
+      direccion
+      telefono
+    }
+  }
+}
+
+
+# Listar todos los envíos de equipos con las relaciones de gerencias y sedes.
+# Nota: EnvioEquipo tiene dos referencias al mismo tipo Usuario
+# (gerenciaEncargada y gerenciaReceptora) y dos al mismo tipo Sede
+# (sedeDestino y sedeOrigen).
+query ListarEnviosEquipo @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar los envíos.") {
+  envioEquipos {
+    id
+    tipoEnvio
+    fechaEnvio
+    descripcionGeneral
+    fechaRecepcion
+    # Gerencia que realizó el envío.
+    encargado: gerenciaEncargada {
+      nombre
+      apellido
+      cargo
+    }
+    # Gerencia que recibió el envío.
+    receptor: gerenciaReceptora {
+      nombre
+      apellido
+      cargo
+    }
+    # Sede de origen.
+    origen: sedeOrigen {
+      nombre
+      direccion
+    }
+    # Sede de destino.
+    destino: sedeDestino {
+      nombre
+      direccion
+    }
+  }
+}
+
+# Obtener un envío por ID con todas sus relaciones.
+query ObtenerEnvioPorId($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede obtener un envío por ID.") {
+  envioEquipo(id: $id) {
+    id
+    tipoEnvio
+    fechaEnvio
+    descripcionGeneral
+    fechaRecepcion
+    encargado: gerenciaEncargada {
+      id
+      nombre
+      apellido
+      cedula
+      cargo
+    }
+    receptor: gerenciaReceptora {
+      id
+      nombre
+      apellido
+      cedula
+      cargo
+    }
+    origen: sedeOrigen {
+      id
+      nombre
+      direccion
+      telefono
+    }
+    destino: sedeDestino {
+      id
+      nombre
+      direccion
+      telefono
+    }
+  }
+}
+
+# Listar todas las compañías contratistas.
+query ListarCompaniasContratistas @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar las compañías contratistas.") {
+  companiaContratistas {
+    id
+    nombre
+    rif
+    telefonoContacto
+  }
+}
+
+# Listar cuadrillas de una compañía contratista específica.
+# Usa el campo _on_ para obtener las cuadrillas relacionadas.
+query ListarCuadrillasPorContratista($companiaId: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar cuadrillas por contratista.") {
+  companiaContratista(id: $companiaId) {
+    id
+    nombre
+    # <campo>_on_<clave_foranea> para obtener las cuadrillas de esta compañía.
+    cuadrillas: cuadrillas_on_companiaContratista {
+      id
+      nombreIdentificador
+      tamanoAproximado
+    }
+  }
+}
+
+# Listar equipamentos prestados con información de la compañía y el equipamento.
+query ListarEquipamentosPrestados @auth(level: PUBLIC, insecureReason: "Cualquier persona puede listar los equipos prestados.") {
+  equipamentoPrestados {
+    id
+    fechaInicio
+    fechaDevolucion
+    # Compañía que tiene el equipamento prestado.
+    compania: companiaPrestada {
+      nombre
+      rif
+      telefonoContacto
+    }
+    # Detalles del equipamento prestado.
+    equipamento {
+      nombre
+      descripcion
+      modelo
+    }
+  }
+}
+
+# ─────────────────────────────────────────────
+# TESORERÍA — MÓDULO DE MOVIMIENTOS CONTABLES
+# ─────────────────────────────────────────────
+# NOTA: DataConnect no soporta WHERE/ORDER BY/LIMIT.
+# El filtrado y ordenamiento debe hacerse cliente-side
+# después de obtener los datos.
+
+# Listar todos los movimientos de tesorería (avíos y retiros) con todas sus relaciones.
+# client-side: filtrar por tipo (tipo == "avio" / "retiro"), estado, sede, fecha, etc.
+query ListarMovimientosTesoreria @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  movimientoTesorerias {
+    id
+    tipo
+    monto
+    moneda
+    tasaBCV
+    fechaTasa
+    concepto
+    estado
+    creadoEn
+    aprobadoEn
+    # Relación con la sede
+    sede {
+      id
+      nombre
+    }
+    # Usuario que creó el movimiento
+    creador: creadoPor {
+      id
+      nombre
+      apellido
+      email
+      rol
+    }
+    # Usuario que aprobó (nullable)
+    aprobador: aprobadoPor {
+      id
+      nombre
+      apellido
+      email
+      rol
+    }
+    avioRefId
+    anulaAId
+  }
+}
+
+# Obtener un movimiento de tesorería por ID con todas sus relaciones.
+query ObtenerMovimientoPorId($id: UUID!) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  movimientoTesoreria(key: { id: $id }) {
+    id
+    tipo
+    monto
+    moneda
+    tasaBCV
+    fechaTasa
+    concepto
+    estado
+    creadoEn
+    aprobadoEn
+    sede {
+      id
+      nombre
+      direccion
+    }
+    creador: creadoPor {
+      id
+      nombre
+      apellido
+      email
+      rol
+    }
+    aprobador: aprobadoPor {
+      id
+      nombre
+      apellido
+      email
+      rol
+    }
+    avioRefId
+    anulaAId
+  }
+}
+
+# Listar todos los fondos por sede.
+# El filtrado por sede debe hacerse cliente-side.
+query ListarFondos @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  fondos {
+    sede {
+      id
+      nombre
+    }
+    saldo
+    moneda
+    ultimaActualizacion
+  }
+}
+
+# Obtener el fondo de una sede específica usando la relación inversa
+# fondos_on_sede generada automáticamente por la FK en Fondo.sede.
+query ObtenerFondoPorSede($sedeId: UUID!) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  sede(id: $sedeId) {
+    id
+    nombre
+    fondo: fondos_on_sede {
+      id
+      saldo
+      moneda
+      ultimaActualizacion
+    }
+  }
+}

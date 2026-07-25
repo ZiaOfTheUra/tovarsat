@@ -1,0 +1,168 @@
+import { CrearUsuarioData, CrearUsuarioVariables, ActualizarMiPerfilData, ActualizarMiPerfilVariables, EliminarUsuarioData, EliminarUsuarioVariables, CrearSedeData, CrearSedeVariables, ActualizarSedeData, ActualizarSedeVariables, EliminarSedeData, EliminarSedeVariables, CrearTipoEquipoData, CrearTipoEquipoVariables, ActualizarTipoEquipoData, ActualizarTipoEquipoVariables, EliminarTipoEquipoData, EliminarTipoEquipoVariables, CrearEquipoInventarioData, CrearEquipoInventarioVariables, ActualizarEquipoInventarioData, ActualizarEquipoInventarioVariables, EliminarEquipoInventarioData, EliminarEquipoInventarioVariables, CrearEnvioEquipoData, CrearEnvioEquipoVariables, RecepcionarEnvioData, RecepcionarEnvioVariables, EliminarEnvioEquipoData, EliminarEnvioEquipoVariables, RegistrarAsistenciaData, RegistrarAsistenciaVariables, RegistrarEntradaMananaData, RegistrarEntradaMananaVariables, ActualizarAsistenciaData, ActualizarAsistenciaVariables, EliminarAsistenciaData, EliminarAsistenciaVariables, CrearCompaniaContratistaData, CrearCompaniaContratistaVariables, ActualizarCompaniaContratistaData, ActualizarCompaniaContratistaVariables, EliminarCompaniaContratistaData, EliminarCompaniaContratistaVariables, CrearCuadrillaData, CrearCuadrillaVariables, ActualizarCuadrillaData, ActualizarCuadrillaVariables, EliminarCuadrillaData, EliminarCuadrillaVariables, CrearEquipamentoData, CrearEquipamentoVariables, ActualizarEquipamentoData, ActualizarEquipamentoVariables, EliminarEquipamentoData, EliminarEquipamentoVariables, PrestarEquipamentoData, PrestarEquipamentoVariables, DevolverEquipamentoData, DevolverEquipamentoVariables, EliminarEquipamentoPrestadoData, EliminarEquipamentoPrestadoVariables, CrearMovimientoTesoreriaData, CrearMovimientoTesoreriaVariables, AprobarMovimientoTesoreriaData, AprobarMovimientoTesoreriaVariables, AnularMovimientoTesoreriaData, AnularMovimientoTesoreriaVariables, EliminarMovimientoTesoreriaData, EliminarMovimientoTesoreriaVariables, CrearFondoData, CrearFondoVariables, ActualizarFondoData, ActualizarFondoVariables, EliminarFondoData, EliminarFondoVariables, ListarSedesData, ListarUsuariosData, ListarMisAsistenciasData, ObtenerUsuarioPorIdData, ObtenerUsuarioPorIdVariables, ListarTiposEquipoData, ListarEquiposInventarioData, ObtenerEquipoPorIdData, ObtenerEquipoPorIdVariables, ListarEnviosEquipoData, ObtenerEnvioPorIdData, ObtenerEnvioPorIdVariables, ListarCompaniasContratistasData, ListarCuadrillasPorContratistaData, ListarCuadrillasPorContratistaVariables, ListarEquipamentosPrestadosData, ListarMovimientosTesoreriaData, ObtenerMovimientoPorIdData, ObtenerMovimientoPorIdVariables, ListarFondosData, ObtenerFondoPorSedeData, ObtenerFondoPorSedeVariables } from '../';
+import { UseDataConnectQueryResult, useDataConnectQueryOptions, UseDataConnectMutationResult, useDataConnectMutationOptions} from '@tanstack-query-firebase/react/data-connect';
+import { UseQueryResult, UseMutationResult} from '@tanstack/react-query';
+import { DataConnect } from 'firebase/data-connect';
+import { FirebaseError } from 'firebase/app';
+
+
+export function useCrearUsuario(options?: useDataConnectMutationOptions<CrearUsuarioData, FirebaseError, CrearUsuarioVariables>): UseDataConnectMutationResult<CrearUsuarioData, CrearUsuarioVariables>;
+export function useCrearUsuario(dc: DataConnect, options?: useDataConnectMutationOptions<CrearUsuarioData, FirebaseError, CrearUsuarioVariables>): UseDataConnectMutationResult<CrearUsuarioData, CrearUsuarioVariables>;
+
+export function useActualizarMiPerfil(options?: useDataConnectMutationOptions<ActualizarMiPerfilData, FirebaseError, ActualizarMiPerfilVariables>): UseDataConnectMutationResult<ActualizarMiPerfilData, ActualizarMiPerfilVariables>;
+export function useActualizarMiPerfil(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarMiPerfilData, FirebaseError, ActualizarMiPerfilVariables>): UseDataConnectMutationResult<ActualizarMiPerfilData, ActualizarMiPerfilVariables>;
+
+export function useEliminarUsuario(options?: useDataConnectMutationOptions<EliminarUsuarioData, FirebaseError, EliminarUsuarioVariables>): UseDataConnectMutationResult<EliminarUsuarioData, EliminarUsuarioVariables>;
+export function useEliminarUsuario(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarUsuarioData, FirebaseError, EliminarUsuarioVariables>): UseDataConnectMutationResult<EliminarUsuarioData, EliminarUsuarioVariables>;
+
+export function useCrearSede(options?: useDataConnectMutationOptions<CrearSedeData, FirebaseError, CrearSedeVariables>): UseDataConnectMutationResult<CrearSedeData, CrearSedeVariables>;
+export function useCrearSede(dc: DataConnect, options?: useDataConnectMutationOptions<CrearSedeData, FirebaseError, CrearSedeVariables>): UseDataConnectMutationResult<CrearSedeData, CrearSedeVariables>;
+
+export function useActualizarSede(options?: useDataConnectMutationOptions<ActualizarSedeData, FirebaseError, ActualizarSedeVariables>): UseDataConnectMutationResult<ActualizarSedeData, ActualizarSedeVariables>;
+export function useActualizarSede(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarSedeData, FirebaseError, ActualizarSedeVariables>): UseDataConnectMutationResult<ActualizarSedeData, ActualizarSedeVariables>;
+
+export function useEliminarSede(options?: useDataConnectMutationOptions<EliminarSedeData, FirebaseError, EliminarSedeVariables>): UseDataConnectMutationResult<EliminarSedeData, EliminarSedeVariables>;
+export function useEliminarSede(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarSedeData, FirebaseError, EliminarSedeVariables>): UseDataConnectMutationResult<EliminarSedeData, EliminarSedeVariables>;
+
+export function useCrearTipoEquipo(options?: useDataConnectMutationOptions<CrearTipoEquipoData, FirebaseError, CrearTipoEquipoVariables>): UseDataConnectMutationResult<CrearTipoEquipoData, CrearTipoEquipoVariables>;
+export function useCrearTipoEquipo(dc: DataConnect, options?: useDataConnectMutationOptions<CrearTipoEquipoData, FirebaseError, CrearTipoEquipoVariables>): UseDataConnectMutationResult<CrearTipoEquipoData, CrearTipoEquipoVariables>;
+
+export function useActualizarTipoEquipo(options?: useDataConnectMutationOptions<ActualizarTipoEquipoData, FirebaseError, ActualizarTipoEquipoVariables>): UseDataConnectMutationResult<ActualizarTipoEquipoData, ActualizarTipoEquipoVariables>;
+export function useActualizarTipoEquipo(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarTipoEquipoData, FirebaseError, ActualizarTipoEquipoVariables>): UseDataConnectMutationResult<ActualizarTipoEquipoData, ActualizarTipoEquipoVariables>;
+
+export function useEliminarTipoEquipo(options?: useDataConnectMutationOptions<EliminarTipoEquipoData, FirebaseError, EliminarTipoEquipoVariables>): UseDataConnectMutationResult<EliminarTipoEquipoData, EliminarTipoEquipoVariables>;
+export function useEliminarTipoEquipo(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarTipoEquipoData, FirebaseError, EliminarTipoEquipoVariables>): UseDataConnectMutationResult<EliminarTipoEquipoData, EliminarTipoEquipoVariables>;
+
+export function useCrearEquipoInventario(options?: useDataConnectMutationOptions<CrearEquipoInventarioData, FirebaseError, CrearEquipoInventarioVariables>): UseDataConnectMutationResult<CrearEquipoInventarioData, CrearEquipoInventarioVariables>;
+export function useCrearEquipoInventario(dc: DataConnect, options?: useDataConnectMutationOptions<CrearEquipoInventarioData, FirebaseError, CrearEquipoInventarioVariables>): UseDataConnectMutationResult<CrearEquipoInventarioData, CrearEquipoInventarioVariables>;
+
+export function useActualizarEquipoInventario(options?: useDataConnectMutationOptions<ActualizarEquipoInventarioData, FirebaseError, ActualizarEquipoInventarioVariables>): UseDataConnectMutationResult<ActualizarEquipoInventarioData, ActualizarEquipoInventarioVariables>;
+export function useActualizarEquipoInventario(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarEquipoInventarioData, FirebaseError, ActualizarEquipoInventarioVariables>): UseDataConnectMutationResult<ActualizarEquipoInventarioData, ActualizarEquipoInventarioVariables>;
+
+export function useEliminarEquipoInventario(options?: useDataConnectMutationOptions<EliminarEquipoInventarioData, FirebaseError, EliminarEquipoInventarioVariables>): UseDataConnectMutationResult<EliminarEquipoInventarioData, EliminarEquipoInventarioVariables>;
+export function useEliminarEquipoInventario(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarEquipoInventarioData, FirebaseError, EliminarEquipoInventarioVariables>): UseDataConnectMutationResult<EliminarEquipoInventarioData, EliminarEquipoInventarioVariables>;
+
+export function useCrearEnvioEquipo(options?: useDataConnectMutationOptions<CrearEnvioEquipoData, FirebaseError, CrearEnvioEquipoVariables>): UseDataConnectMutationResult<CrearEnvioEquipoData, CrearEnvioEquipoVariables>;
+export function useCrearEnvioEquipo(dc: DataConnect, options?: useDataConnectMutationOptions<CrearEnvioEquipoData, FirebaseError, CrearEnvioEquipoVariables>): UseDataConnectMutationResult<CrearEnvioEquipoData, CrearEnvioEquipoVariables>;
+
+export function useRecepcionarEnvio(options?: useDataConnectMutationOptions<RecepcionarEnvioData, FirebaseError, RecepcionarEnvioVariables>): UseDataConnectMutationResult<RecepcionarEnvioData, RecepcionarEnvioVariables>;
+export function useRecepcionarEnvio(dc: DataConnect, options?: useDataConnectMutationOptions<RecepcionarEnvioData, FirebaseError, RecepcionarEnvioVariables>): UseDataConnectMutationResult<RecepcionarEnvioData, RecepcionarEnvioVariables>;
+
+export function useEliminarEnvioEquipo(options?: useDataConnectMutationOptions<EliminarEnvioEquipoData, FirebaseError, EliminarEnvioEquipoVariables>): UseDataConnectMutationResult<EliminarEnvioEquipoData, EliminarEnvioEquipoVariables>;
+export function useEliminarEnvioEquipo(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarEnvioEquipoData, FirebaseError, EliminarEnvioEquipoVariables>): UseDataConnectMutationResult<EliminarEnvioEquipoData, EliminarEnvioEquipoVariables>;
+
+export function useRegistrarAsistencia(options?: useDataConnectMutationOptions<RegistrarAsistenciaData, FirebaseError, RegistrarAsistenciaVariables>): UseDataConnectMutationResult<RegistrarAsistenciaData, RegistrarAsistenciaVariables>;
+export function useRegistrarAsistencia(dc: DataConnect, options?: useDataConnectMutationOptions<RegistrarAsistenciaData, FirebaseError, RegistrarAsistenciaVariables>): UseDataConnectMutationResult<RegistrarAsistenciaData, RegistrarAsistenciaVariables>;
+
+export function useRegistrarEntradaManana(options?: useDataConnectMutationOptions<RegistrarEntradaMananaData, FirebaseError, RegistrarEntradaMananaVariables>): UseDataConnectMutationResult<RegistrarEntradaMananaData, RegistrarEntradaMananaVariables>;
+export function useRegistrarEntradaManana(dc: DataConnect, options?: useDataConnectMutationOptions<RegistrarEntradaMananaData, FirebaseError, RegistrarEntradaMananaVariables>): UseDataConnectMutationResult<RegistrarEntradaMananaData, RegistrarEntradaMananaVariables>;
+
+export function useActualizarAsistencia(options?: useDataConnectMutationOptions<ActualizarAsistenciaData, FirebaseError, ActualizarAsistenciaVariables>): UseDataConnectMutationResult<ActualizarAsistenciaData, ActualizarAsistenciaVariables>;
+export function useActualizarAsistencia(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarAsistenciaData, FirebaseError, ActualizarAsistenciaVariables>): UseDataConnectMutationResult<ActualizarAsistenciaData, ActualizarAsistenciaVariables>;
+
+export function useEliminarAsistencia(options?: useDataConnectMutationOptions<EliminarAsistenciaData, FirebaseError, EliminarAsistenciaVariables>): UseDataConnectMutationResult<EliminarAsistenciaData, EliminarAsistenciaVariables>;
+export function useEliminarAsistencia(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarAsistenciaData, FirebaseError, EliminarAsistenciaVariables>): UseDataConnectMutationResult<EliminarAsistenciaData, EliminarAsistenciaVariables>;
+
+export function useCrearCompaniaContratista(options?: useDataConnectMutationOptions<CrearCompaniaContratistaData, FirebaseError, CrearCompaniaContratistaVariables>): UseDataConnectMutationResult<CrearCompaniaContratistaData, CrearCompaniaContratistaVariables>;
+export function useCrearCompaniaContratista(dc: DataConnect, options?: useDataConnectMutationOptions<CrearCompaniaContratistaData, FirebaseError, CrearCompaniaContratistaVariables>): UseDataConnectMutationResult<CrearCompaniaContratistaData, CrearCompaniaContratistaVariables>;
+
+export function useActualizarCompaniaContratista(options?: useDataConnectMutationOptions<ActualizarCompaniaContratistaData, FirebaseError, ActualizarCompaniaContratistaVariables>): UseDataConnectMutationResult<ActualizarCompaniaContratistaData, ActualizarCompaniaContratistaVariables>;
+export function useActualizarCompaniaContratista(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarCompaniaContratistaData, FirebaseError, ActualizarCompaniaContratistaVariables>): UseDataConnectMutationResult<ActualizarCompaniaContratistaData, ActualizarCompaniaContratistaVariables>;
+
+export function useEliminarCompaniaContratista(options?: useDataConnectMutationOptions<EliminarCompaniaContratistaData, FirebaseError, EliminarCompaniaContratistaVariables>): UseDataConnectMutationResult<EliminarCompaniaContratistaData, EliminarCompaniaContratistaVariables>;
+export function useEliminarCompaniaContratista(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarCompaniaContratistaData, FirebaseError, EliminarCompaniaContratistaVariables>): UseDataConnectMutationResult<EliminarCompaniaContratistaData, EliminarCompaniaContratistaVariables>;
+
+export function useCrearCuadrilla(options?: useDataConnectMutationOptions<CrearCuadrillaData, FirebaseError, CrearCuadrillaVariables>): UseDataConnectMutationResult<CrearCuadrillaData, CrearCuadrillaVariables>;
+export function useCrearCuadrilla(dc: DataConnect, options?: useDataConnectMutationOptions<CrearCuadrillaData, FirebaseError, CrearCuadrillaVariables>): UseDataConnectMutationResult<CrearCuadrillaData, CrearCuadrillaVariables>;
+
+export function useActualizarCuadrilla(options?: useDataConnectMutationOptions<ActualizarCuadrillaData, FirebaseError, ActualizarCuadrillaVariables>): UseDataConnectMutationResult<ActualizarCuadrillaData, ActualizarCuadrillaVariables>;
+export function useActualizarCuadrilla(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarCuadrillaData, FirebaseError, ActualizarCuadrillaVariables>): UseDataConnectMutationResult<ActualizarCuadrillaData, ActualizarCuadrillaVariables>;
+
+export function useEliminarCuadrilla(options?: useDataConnectMutationOptions<EliminarCuadrillaData, FirebaseError, EliminarCuadrillaVariables>): UseDataConnectMutationResult<EliminarCuadrillaData, EliminarCuadrillaVariables>;
+export function useEliminarCuadrilla(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarCuadrillaData, FirebaseError, EliminarCuadrillaVariables>): UseDataConnectMutationResult<EliminarCuadrillaData, EliminarCuadrillaVariables>;
+
+export function useCrearEquipamento(options?: useDataConnectMutationOptions<CrearEquipamentoData, FirebaseError, CrearEquipamentoVariables>): UseDataConnectMutationResult<CrearEquipamentoData, CrearEquipamentoVariables>;
+export function useCrearEquipamento(dc: DataConnect, options?: useDataConnectMutationOptions<CrearEquipamentoData, FirebaseError, CrearEquipamentoVariables>): UseDataConnectMutationResult<CrearEquipamentoData, CrearEquipamentoVariables>;
+
+export function useActualizarEquipamento(options?: useDataConnectMutationOptions<ActualizarEquipamentoData, FirebaseError, ActualizarEquipamentoVariables>): UseDataConnectMutationResult<ActualizarEquipamentoData, ActualizarEquipamentoVariables>;
+export function useActualizarEquipamento(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarEquipamentoData, FirebaseError, ActualizarEquipamentoVariables>): UseDataConnectMutationResult<ActualizarEquipamentoData, ActualizarEquipamentoVariables>;
+
+export function useEliminarEquipamento(options?: useDataConnectMutationOptions<EliminarEquipamentoData, FirebaseError, EliminarEquipamentoVariables>): UseDataConnectMutationResult<EliminarEquipamentoData, EliminarEquipamentoVariables>;
+export function useEliminarEquipamento(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarEquipamentoData, FirebaseError, EliminarEquipamentoVariables>): UseDataConnectMutationResult<EliminarEquipamentoData, EliminarEquipamentoVariables>;
+
+export function usePrestarEquipamento(options?: useDataConnectMutationOptions<PrestarEquipamentoData, FirebaseError, PrestarEquipamentoVariables>): UseDataConnectMutationResult<PrestarEquipamentoData, PrestarEquipamentoVariables>;
+export function usePrestarEquipamento(dc: DataConnect, options?: useDataConnectMutationOptions<PrestarEquipamentoData, FirebaseError, PrestarEquipamentoVariables>): UseDataConnectMutationResult<PrestarEquipamentoData, PrestarEquipamentoVariables>;
+
+export function useDevolverEquipamento(options?: useDataConnectMutationOptions<DevolverEquipamentoData, FirebaseError, DevolverEquipamentoVariables>): UseDataConnectMutationResult<DevolverEquipamentoData, DevolverEquipamentoVariables>;
+export function useDevolverEquipamento(dc: DataConnect, options?: useDataConnectMutationOptions<DevolverEquipamentoData, FirebaseError, DevolverEquipamentoVariables>): UseDataConnectMutationResult<DevolverEquipamentoData, DevolverEquipamentoVariables>;
+
+export function useEliminarEquipamentoPrestado(options?: useDataConnectMutationOptions<EliminarEquipamentoPrestadoData, FirebaseError, EliminarEquipamentoPrestadoVariables>): UseDataConnectMutationResult<EliminarEquipamentoPrestadoData, EliminarEquipamentoPrestadoVariables>;
+export function useEliminarEquipamentoPrestado(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarEquipamentoPrestadoData, FirebaseError, EliminarEquipamentoPrestadoVariables>): UseDataConnectMutationResult<EliminarEquipamentoPrestadoData, EliminarEquipamentoPrestadoVariables>;
+
+export function useCrearMovimientoTesoreria(options?: useDataConnectMutationOptions<CrearMovimientoTesoreriaData, FirebaseError, CrearMovimientoTesoreriaVariables>): UseDataConnectMutationResult<CrearMovimientoTesoreriaData, CrearMovimientoTesoreriaVariables>;
+export function useCrearMovimientoTesoreria(dc: DataConnect, options?: useDataConnectMutationOptions<CrearMovimientoTesoreriaData, FirebaseError, CrearMovimientoTesoreriaVariables>): UseDataConnectMutationResult<CrearMovimientoTesoreriaData, CrearMovimientoTesoreriaVariables>;
+
+export function useAprobarMovimientoTesoreria(options?: useDataConnectMutationOptions<AprobarMovimientoTesoreriaData, FirebaseError, AprobarMovimientoTesoreriaVariables>): UseDataConnectMutationResult<AprobarMovimientoTesoreriaData, AprobarMovimientoTesoreriaVariables>;
+export function useAprobarMovimientoTesoreria(dc: DataConnect, options?: useDataConnectMutationOptions<AprobarMovimientoTesoreriaData, FirebaseError, AprobarMovimientoTesoreriaVariables>): UseDataConnectMutationResult<AprobarMovimientoTesoreriaData, AprobarMovimientoTesoreriaVariables>;
+
+export function useAnularMovimientoTesoreria(options?: useDataConnectMutationOptions<AnularMovimientoTesoreriaData, FirebaseError, AnularMovimientoTesoreriaVariables>): UseDataConnectMutationResult<AnularMovimientoTesoreriaData, AnularMovimientoTesoreriaVariables>;
+export function useAnularMovimientoTesoreria(dc: DataConnect, options?: useDataConnectMutationOptions<AnularMovimientoTesoreriaData, FirebaseError, AnularMovimientoTesoreriaVariables>): UseDataConnectMutationResult<AnularMovimientoTesoreriaData, AnularMovimientoTesoreriaVariables>;
+
+export function useEliminarMovimientoTesoreria(options?: useDataConnectMutationOptions<EliminarMovimientoTesoreriaData, FirebaseError, EliminarMovimientoTesoreriaVariables>): UseDataConnectMutationResult<EliminarMovimientoTesoreriaData, EliminarMovimientoTesoreriaVariables>;
+export function useEliminarMovimientoTesoreria(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarMovimientoTesoreriaData, FirebaseError, EliminarMovimientoTesoreriaVariables>): UseDataConnectMutationResult<EliminarMovimientoTesoreriaData, EliminarMovimientoTesoreriaVariables>;
+
+export function useCrearFondo(options?: useDataConnectMutationOptions<CrearFondoData, FirebaseError, CrearFondoVariables>): UseDataConnectMutationResult<CrearFondoData, CrearFondoVariables>;
+export function useCrearFondo(dc: DataConnect, options?: useDataConnectMutationOptions<CrearFondoData, FirebaseError, CrearFondoVariables>): UseDataConnectMutationResult<CrearFondoData, CrearFondoVariables>;
+
+export function useActualizarFondo(options?: useDataConnectMutationOptions<ActualizarFondoData, FirebaseError, ActualizarFondoVariables>): UseDataConnectMutationResult<ActualizarFondoData, ActualizarFondoVariables>;
+export function useActualizarFondo(dc: DataConnect, options?: useDataConnectMutationOptions<ActualizarFondoData, FirebaseError, ActualizarFondoVariables>): UseDataConnectMutationResult<ActualizarFondoData, ActualizarFondoVariables>;
+
+export function useEliminarFondo(options?: useDataConnectMutationOptions<EliminarFondoData, FirebaseError, EliminarFondoVariables>): UseDataConnectMutationResult<EliminarFondoData, EliminarFondoVariables>;
+export function useEliminarFondo(dc: DataConnect, options?: useDataConnectMutationOptions<EliminarFondoData, FirebaseError, EliminarFondoVariables>): UseDataConnectMutationResult<EliminarFondoData, EliminarFondoVariables>;
+
+export function useListarSedes(options?: useDataConnectQueryOptions<ListarSedesData>): UseDataConnectQueryResult<ListarSedesData, undefined>;
+export function useListarSedes(dc: DataConnect, options?: useDataConnectQueryOptions<ListarSedesData>): UseDataConnectQueryResult<ListarSedesData, undefined>;
+
+export function useListarUsuarios(options?: useDataConnectQueryOptions<ListarUsuariosData>): UseDataConnectQueryResult<ListarUsuariosData, undefined>;
+export function useListarUsuarios(dc: DataConnect, options?: useDataConnectQueryOptions<ListarUsuariosData>): UseDataConnectQueryResult<ListarUsuariosData, undefined>;
+
+export function useListarMisAsistencias(options?: useDataConnectQueryOptions<ListarMisAsistenciasData>): UseDataConnectQueryResult<ListarMisAsistenciasData, undefined>;
+export function useListarMisAsistencias(dc: DataConnect, options?: useDataConnectQueryOptions<ListarMisAsistenciasData>): UseDataConnectQueryResult<ListarMisAsistenciasData, undefined>;
+
+export function useObtenerUsuarioPorId(vars: ObtenerUsuarioPorIdVariables, options?: useDataConnectQueryOptions<ObtenerUsuarioPorIdData>): UseDataConnectQueryResult<ObtenerUsuarioPorIdData, ObtenerUsuarioPorIdVariables>;
+export function useObtenerUsuarioPorId(dc: DataConnect, vars: ObtenerUsuarioPorIdVariables, options?: useDataConnectQueryOptions<ObtenerUsuarioPorIdData>): UseDataConnectQueryResult<ObtenerUsuarioPorIdData, ObtenerUsuarioPorIdVariables>;
+
+export function useListarTiposEquipo(options?: useDataConnectQueryOptions<ListarTiposEquipoData>): UseDataConnectQueryResult<ListarTiposEquipoData, undefined>;
+export function useListarTiposEquipo(dc: DataConnect, options?: useDataConnectQueryOptions<ListarTiposEquipoData>): UseDataConnectQueryResult<ListarTiposEquipoData, undefined>;
+
+export function useListarEquiposInventario(options?: useDataConnectQueryOptions<ListarEquiposInventarioData>): UseDataConnectQueryResult<ListarEquiposInventarioData, undefined>;
+export function useListarEquiposInventario(dc: DataConnect, options?: useDataConnectQueryOptions<ListarEquiposInventarioData>): UseDataConnectQueryResult<ListarEquiposInventarioData, undefined>;
+
+export function useObtenerEquipoPorId(vars: ObtenerEquipoPorIdVariables, options?: useDataConnectQueryOptions<ObtenerEquipoPorIdData>): UseDataConnectQueryResult<ObtenerEquipoPorIdData, ObtenerEquipoPorIdVariables>;
+export function useObtenerEquipoPorId(dc: DataConnect, vars: ObtenerEquipoPorIdVariables, options?: useDataConnectQueryOptions<ObtenerEquipoPorIdData>): UseDataConnectQueryResult<ObtenerEquipoPorIdData, ObtenerEquipoPorIdVariables>;
+
+export function useListarEnviosEquipo(options?: useDataConnectQueryOptions<ListarEnviosEquipoData>): UseDataConnectQueryResult<ListarEnviosEquipoData, undefined>;
+export function useListarEnviosEquipo(dc: DataConnect, options?: useDataConnectQueryOptions<ListarEnviosEquipoData>): UseDataConnectQueryResult<ListarEnviosEquipoData, undefined>;
+
+export function useObtenerEnvioPorId(vars: ObtenerEnvioPorIdVariables, options?: useDataConnectQueryOptions<ObtenerEnvioPorIdData>): UseDataConnectQueryResult<ObtenerEnvioPorIdData, ObtenerEnvioPorIdVariables>;
+export function useObtenerEnvioPorId(dc: DataConnect, vars: ObtenerEnvioPorIdVariables, options?: useDataConnectQueryOptions<ObtenerEnvioPorIdData>): UseDataConnectQueryResult<ObtenerEnvioPorIdData, ObtenerEnvioPorIdVariables>;
+
+export function useListarCompaniasContratistas(options?: useDataConnectQueryOptions<ListarCompaniasContratistasData>): UseDataConnectQueryResult<ListarCompaniasContratistasData, undefined>;
+export function useListarCompaniasContratistas(dc: DataConnect, options?: useDataConnectQueryOptions<ListarCompaniasContratistasData>): UseDataConnectQueryResult<ListarCompaniasContratistasData, undefined>;
+
+export function useListarCuadrillasPorContratista(vars: ListarCuadrillasPorContratistaVariables, options?: useDataConnectQueryOptions<ListarCuadrillasPorContratistaData>): UseDataConnectQueryResult<ListarCuadrillasPorContratistaData, ListarCuadrillasPorContratistaVariables>;
+export function useListarCuadrillasPorContratista(dc: DataConnect, vars: ListarCuadrillasPorContratistaVariables, options?: useDataConnectQueryOptions<ListarCuadrillasPorContratistaData>): UseDataConnectQueryResult<ListarCuadrillasPorContratistaData, ListarCuadrillasPorContratistaVariables>;
+
+export function useListarEquipamentosPrestados(options?: useDataConnectQueryOptions<ListarEquipamentosPrestadosData>): UseDataConnectQueryResult<ListarEquipamentosPrestadosData, undefined>;
+export function useListarEquipamentosPrestados(dc: DataConnect, options?: useDataConnectQueryOptions<ListarEquipamentosPrestadosData>): UseDataConnectQueryResult<ListarEquipamentosPrestadosData, undefined>;
+
+export function useListarMovimientosTesoreria(options?: useDataConnectQueryOptions<ListarMovimientosTesoreriaData>): UseDataConnectQueryResult<ListarMovimientosTesoreriaData, undefined>;
+export function useListarMovimientosTesoreria(dc: DataConnect, options?: useDataConnectQueryOptions<ListarMovimientosTesoreriaData>): UseDataConnectQueryResult<ListarMovimientosTesoreriaData, undefined>;
+
+export function useObtenerMovimientoPorId(vars: ObtenerMovimientoPorIdVariables, options?: useDataConnectQueryOptions<ObtenerMovimientoPorIdData>): UseDataConnectQueryResult<ObtenerMovimientoPorIdData, ObtenerMovimientoPorIdVariables>;
+export function useObtenerMovimientoPorId(dc: DataConnect, vars: ObtenerMovimientoPorIdVariables, options?: useDataConnectQueryOptions<ObtenerMovimientoPorIdData>): UseDataConnectQueryResult<ObtenerMovimientoPorIdData, ObtenerMovimientoPorIdVariables>;
+
+export function useListarFondos(options?: useDataConnectQueryOptions<ListarFondosData>): UseDataConnectQueryResult<ListarFondosData, undefined>;
+export function useListarFondos(dc: DataConnect, options?: useDataConnectQueryOptions<ListarFondosData>): UseDataConnectQueryResult<ListarFondosData, undefined>;
+
+export function useObtenerFondoPorSede(vars: ObtenerFondoPorSedeVariables, options?: useDataConnectQueryOptions<ObtenerFondoPorSedeData>): UseDataConnectQueryResult<ObtenerFondoPorSedeData, ObtenerFondoPorSedeVariables>;
+export function useObtenerFondoPorSede(dc: DataConnect, vars: ObtenerFondoPorSedeVariables, options?: useDataConnectQueryOptions<ObtenerFondoPorSedeData>): UseDataConnectQueryResult<ObtenerFondoPorSedeData, ObtenerFondoPorSedeVariables>;

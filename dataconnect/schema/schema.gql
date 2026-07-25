@@ -1,0 +1,200 @@
+# Esquema ideal para el sistema de gestión TovarSat
+# Adaptado de la estructura de ejemplo para una app de reseñas de películas.
+# Se han traducido y adaptado los comentarios al español según la semántica
+# y relaciones particulares de cada tipo.
+
+# La tabla Usuario es clave por UID autogenerado por @table.
+type Usuario @table {
+  # `@default(expr: "auth.uid")` se establecería con el UID de Firebase Auth
+  # durante inserción y actualización; aquí se deja como id autogenerado.
+  # id: UUID! @default(expr: "uuidV4()")  # Comentado pues @table lo genera automáticamente
+  nombre: String!
+  apellido: String!
+  cedula: String!
+  fechaNacimiento: Date!
+  cargo: String!
+  nivelAdministrativo: String!
+  hashBiometrico: String!
+  # permisosDB almacena los permisos de base de datos como JSON string opcional.
+  permisosDB: String
+  # --- Campos añadidos para alineación con el modelo MVP TovarSAT ---
+  email: String!                   # Email de Firebase Auth
+  rol: String!                     # tesoreriaGeneral | gerenciaLocal | almacenista | oficinista
+  sede: Sede                       # FK → Sede (sede a la que pertenece)
+  activo: Boolean! @default(expr: "true")
+}
+
+# Sede representa las ubicaciones físicas (oficinas, sedes operativas).
+# No tiene relación foránea explícita, pero es referenciada por EquipoInventario y EnvioEquipo.
+type Sede @table {
+  nombre: String!
+  direccion: String!
+  telefono: String
+  contacto: String
+}
+
+# TipoEquipo cataloga los distintos tipos de equipos (router, switch, etc.).
+# modelo es único (@unique), lo que permite una relación uno-a-uno
+# con EquipoInventario a través del campo tipoEquipoModelo.
+# El campo `tipoEquipoModelo: TipoEquipo!` en EquipoInventario generaría
+# un campo de consulta one-to-many:
+#   equiposInventario_por_tipoEquipoModelo: [EquipoInventario!]!
+type TipoEquipo @table {
+  nombreTipo: String!
+  descripcion: String
+  anchoBanda: String
+  canales: Int
+  tecnologiaRelevante: String
+  datosVarios: String
+  # @unique asegura que cada modelo sea único, permitiendo una relación
+  # uno-a-uno con EquipoInventario.
+  modelo: String! @unique
+}
+
+# EquipoInventario es una tabla puente entre TipoEquipo y Sede.
+# Un TipoEquipo puede tener muchos EquipoInventario (one-to-many).
+# Una Sede puede tener muchos EquipoInventario (one-to-many).
+# TipoEquipo <-> Sede es una relación many-to-many a través de EquipoInventario.
+# El campo tipoEquipoModelo agrega la siguiente clave foránea:
+#   tipoEquipoModeloModelo: String!
+# El campo ubicacionActual agrega la siguiente clave foránea:
+#   ubicacionActualId: UUID!
+type EquipoInventario @table {
+  # Relación many-to-one con TipoEquipo por el campo modelo (único).
+  tipoEquipoModelo: TipoEquipo
+  modelo: String!
+  nombreDescriptivo: String!
+  valor: Float!
+  cantidadDisponible: Int!
+  serial: String!
+  estado: String!
+  # Relación many-to-one con Sede.
+  ubicacionActual: Sede
+}
+
+
+# EnvioEquipo registra transferencias de equipos entre gerencias y sedes.
+# Particularidad: tiene dos referencias al mismo tipo Usuario
+# (gerenciaEncargada y gerenciaReceptora) y dos al mismo tipo Sede
+# (sedeDestino y sedeOrigen).
+# Cada referencia a Usuario genera su propia clave foránea:
+#   gerenciaEncargadaId: UUID!
+#   gerenciaReceptoraId: UUID!
+# Cada referencia a Sede genera su propia clave foránea:
+#   sedeDestinoId: UUID!
+#   sedeOrigenId: UUID!
+# También se generan los siguientes campos de consulta:
+#   usuario_por_gerenciaEncargada: Usuario!
+#   usuario_por_gerenciaReceptora: Usuario!
+#   sede_por_sedeDestino: Sede!
+#   sede_por_sedeOrigen: Sede!
+type EnvioEquipo @table {
+  gerenciaEncargada: Usuario
+  gerenciaReceptora: Usuario
+  sedeDestino: Sede
+  sedeOrigen: Sede
+  tipoEnvio: String!
+  fechaEnvio: Date!
+  descripcionGeneral: String
+  fechaRecepcion: Date
+}
+
+# Asistencia registra el control de horario de los usuarios.
+# Usuario <-> Asistencia es una relación one-to-many.
+# El campo usuario agrega la siguiente clave foránea:
+#   usuarioId: UUID!
+# Y genera el siguiente campo de consulta en Usuario:
+#   asistencias_por_usuario: [Asistencia!]!
+type Asistencia @table {
+  usuario: Usuario
+  fecha: Date!
+  # horaEntradaManana y horaSalidaManana son obligatorios (turno matutino).
+  horaEntradaManana: Timestamp!
+  horaSalidaManana: Timestamp!
+  # horaEntradaTarde y horaSalidaTarde son opcionales (turno vespertino).
+  horaEntradaTarde: Timestamp
+  horaSalidaTarde: Timestamp
+}
+
+# CompaniaContratista representa empresas externas contratistas.
+# Es referenciada por Cuadrilla y EquipamentoPrestado.
+type CompaniaContratista @table {
+  nombre: String!
+  rif: String
+  telefonoContacto: String
+}
+
+# Cuadrilla representa grupos de trabajo de una compañía contratista.
+# CompaniaContratista <-> Cuadrilla es una relación one-to-many.
+# El campo companiaContratista agrega la siguiente clave foránea:
+#   companiaContratistaId: UUID!
+# Y genera el siguiente campo de consulta en CompaniaContratista:
+#   cuadrillas_por_companiaContratista: [Cuadrilla!]!
+type Cuadrilla @table {
+  nombreIdentificador: String!
+  tamanoAproximado: Int
+  companiaContratista: CompaniaContratista
+}
+
+# ──────────────────────────── MÓDULO TESORERÍA ────────────────────────────
+
+# MovimientoTesoreria — registro contable de avíos (dotación) y retiros (egresos).
+# Es el libro de movimientos internos de dinero con alta trazabilidad.
+# Relaciones:
+#   - Muchos-a-uno con Usuario (creadoPor / aprobadoPor)
+#   - Muchos-a-uno con Sede
+#   - Auto-referencia opcional: avioRef (retiro descuenta de un avío)
+#   - Auto-referencia opcional: anulaA (anulación apunta al movimiento original)
+type MovimientoTesoreria @table {
+  id: UUID! @default(expr: "uuidV4()")
+  tipo: String!                     # "avio" | "retiro"
+  monto: Float!
+  moneda: String!                   # "USD" | "VES" | "EUR"
+  tasaBCV: Float!
+  fechaTasa: Date!
+  concepto: String!
+  estado: String!                   # "pendiente" | "aprobado" | "anulado"
+  sede: Sede                        # FK → Sede
+  creadoPor: Usuario                # FK → Usuario (quien registró)
+  creadoEn: Timestamp!
+  aprobadoPor: Usuario              # FK → Usuario (quien aprobó, nullable)
+  aprobadoEn: Timestamp             # (nullable)
+  avioRefId: UUID                   # ID del avío del que descuenta este retiro (nullable, scalar)
+  anulaAId: UUID                    # ID del movimiento original que este anula (nullable, scalar)
+}
+
+# Fondo — saldo de fondo local por sede.
+# Relación uno-a-uno con Sede.
+# Saldo = Σ avíos aprobados − Σ retiros
+type Fondo @table {
+  id: UUID! @default(expr: "uuidV4()")
+  sede: Sede!                       # FK → Sede (unique por sede)
+  saldo: Float!
+  moneda: String!                   # "USD" | "VES" | "EUR"
+  ultimaActualizacion: Timestamp!
+}
+
+# Equipamento cataloga herramientas y equipos (diferente de EquipoInventario
+# que gestiona stock de equipos de red). Equipamento se refiere a herramientas
+# prestadas a contratistas.
+type Equipamento @table {
+  nombre: String!
+  descripcion: String
+  datosVarios: String
+  modelo: String
+}
+
+# EquipamentoPrestado es una tabla puente entre CompaniaContratista y Equipamento.
+# Una CompaniaContratista puede tener muchos EquipamentoPrestado (one-to-many).
+# Un Equipamento puede estar prestado a múltiples compañías en distintos momentos (one-to-many).
+# CompaniaContratista <-> Equipamento es una relación many-to-many.
+# El campo companiaPrestada agrega la siguiente clave foránea:
+#   companiaPrestadaId: UUID!
+# El campo equipamento agrega la siguiente clave foránea:
+#   equipamentoId: UUID!
+type EquipamentoPrestado @table {
+  companiaPrestada: CompaniaContratista
+  equipamento: Equipamento
+  fechaInicio: Date!
+  fechaDevolucion: Date
+}

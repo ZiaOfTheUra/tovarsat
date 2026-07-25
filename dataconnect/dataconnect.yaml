@@ -1,0 +1,13 @@
+specVersion: "v1"
+serviceId: "tovarsattest"
+location: "us-east4"
+schemas:
+  - source: "./schema"
+    datasource:
+      postgresql:
+        database: "fdcdb"
+        cloudSql:
+          instanceId: "tovarsattest-fdc"
+          # schemaValidation: "STRICT"     # STRICT: el esquema de Postgres debe coincidir exactamente con Data Connect.
+          # schemaValidation: "COMPATIBLE" # COMPATIBLE: el esquema de Postgres es compatible con Data Connect.
+connectorDirs: ["./example"]

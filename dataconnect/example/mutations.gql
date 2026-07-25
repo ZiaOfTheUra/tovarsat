@@ -1,0 +1,472 @@
+# Mutaciones de ejemplo para el sistema de gestión TovarSat.
+# Adaptado de la estructura de ejemplo para una app de reseñas de películas.
+# Comentarios en español explicando el propósito y nivel de acceso de cada operación.
+
+# ─────────────────────────────────────────────
+# USUARIO
+# ─────────────────────────────────────────────
+
+# Crear un nuevo usuario. Solo administradores pueden crear usuarios.
+mutation CrearUsuario(
+  $nombre: String!,
+  $apellido: String!,
+  $cedula: String!,
+  $fechaNacimiento: Date!,
+  $cargo: String!,
+  $nivelAdministrativo: String!,
+  $hashBiometrico: String!,
+  $permisosDB: String,
+  $email: String!,
+  $rol: String!,
+  $sedeId: UUID!,
+  $activo: Boolean!
+) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  usuario_insert(data: {
+    nombre: $nombre
+    apellido: $apellido
+    cedula: $cedula
+    fechaNacimiento: $fechaNacimiento
+    cargo: $cargo
+    nivelAdministrativo: $nivelAdministrativo
+    hashBiometrico: $hashBiometrico
+    permisosDB: $permisosDB
+    email: $email
+    rol: $rol
+    sedeId: $sedeId
+    activo: $activo
+  })
+}
+
+# Actualizar los datos básicos del perfil del usuario autenticado.
+# Se usa usuario_update con key: id_expr, ya que upsert requeriría todos los campos obligatorios
+# (cargo, fechaNacimiento, hashBiometrico, nivelAdministrativo) que el usuario no puede modificar.
+mutation ActualizarMiPerfil($nombre: String!, $apellido: String!, $cedula: String!, $email: String!) @auth(level: USER) {
+  usuario_update(key: { id_expr: "auth.uid" }, data: {
+    nombre: $nombre
+    apellido: $apellido
+    cedula: $cedula
+    email: $email
+  })
+}
+
+# Eliminar un usuario por ID. Solo administradores.
+mutation EliminarUsuario($id: UUID!) @auth(level: NO_ACCESS) {
+  usuario_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# SEDE
+# ─────────────────────────────────────────────
+
+# Crear una nueva sede.
+mutation CrearSede($nombre: String!, $direccion: String!, $telefono: String, $contacto: String)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear una sede.") {
+  sede_insert(data: { nombre: $nombre, direccion: $direccion, telefono: $telefono, contacto: $contacto })
+}
+
+# Actualizar una sede existente por ID.
+mutation ActualizarSede($id: UUID!, $nombre: String!, $direccion: String!, $telefono: String, $contacto: String)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede actualizar una sede.") {
+  sede_update(key: { id: $id }, data: { nombre: $nombre, direccion: $direccion, telefono: $telefono, contacto: $contacto })
+}
+
+# Eliminar una sede por ID.
+mutation EliminarSede($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar una sede.") {
+  sede_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# TIPO EQUIPO
+# ─────────────────────────────────────────────
+
+# Crear un nuevo tipo de equipo. El campo modelo debe ser único.
+mutation CrearTipoEquipo(
+  $nombreTipo: String!,
+  $modelo: String!,
+  $descripcion: String,
+  $anchoBanda: String,
+  $canales: Int,
+  $tecnologiaRelevante: String,
+  $datosVarios: String
+) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear un tipo de equipo.") {
+  tipoEquipo_insert(data: {
+    nombreTipo: $nombreTipo
+    modelo: $modelo
+    descripcion: $descripcion
+    anchoBanda: $anchoBanda
+    canales: $canales
+    tecnologiaRelevante: $tecnologiaRelevante
+    datosVarios: $datosVarios
+  })
+}
+
+# Actualizar un tipo de equipo por su ID.
+mutation ActualizarTipoEquipo($id: UUID!, $nombreTipo: String!, $descripcion: String, $anchoBanda: String, $canales: Int)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede actualizar un tipo de equipo.") {
+  tipoEquipo_update(key: { id: $id }, data: {
+    nombreTipo: $nombreTipo
+    descripcion: $descripcion
+    anchoBanda: $anchoBanda
+    canales: $canales
+  })
+}
+
+# Eliminar un tipo de equipo por ID.
+mutation EliminarTipoEquipo($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar un tipo de equipo.") {
+  tipoEquipo_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# EQUIPO INVENTARIO
+# ─────────────────────────────────────────────
+
+# Crear un equipo en inventario con referencias al tipo de equipo (por modelo) y ubicación (sede).
+# tipoEquipoModeloModelo es la clave foránea generada por la relación con TipoEquipo.
+# ubicacionActualId es la clave foránea generada por la relación con Sede.
+mutation CrearEquipoInventario(
+  $tipoEquipoModelo: TipoEquipo_Key!,
+  $modelo: String!,
+  $nombreDescriptivo: String!,
+  $valor: Float!,
+  $cantidadDisponible: Int!,
+  $serial: String!,
+  $estado: String!,
+  $ubicacionActualId: UUID!
+) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear un equipo en inventario.") {
+  equipoInventario_insert(data: {
+    tipoEquipoModelo: $tipoEquipoModelo
+    modelo: $modelo
+    nombreDescriptivo: $nombreDescriptivo
+    valor: $valor
+    cantidadDisponible: $cantidadDisponible
+    serial: $serial
+    estado: $estado
+    ubicacionActualId: $ubicacionActualId
+  })
+}
+
+# Actualizar un equipo en inventario por ID.
+mutation ActualizarEquipoInventario(
+  $id: UUID!,
+  $nombreDescriptivo: String!,
+  $valor: Float!,
+  $cantidadDisponible: Int!,
+  $estado: String!,
+  $ubicacionActualId: UUID!
+) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede actualizar un equipo.") {
+  equipoInventario_update(key: { id: $id }, data: {
+    nombreDescriptivo: $nombreDescriptivo
+    valor: $valor
+    cantidadDisponible: $cantidadDisponible
+    estado: $estado
+    ubicacionActualId: $ubicacionActualId
+  })
+}
+
+# Eliminar un equipo en inventario por ID.
+mutation EliminarEquipoInventario($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar un equipo.") {
+  equipoInventario_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# ENVIO EQUIPO
+# ─────────────────────────────────────────────
+
+# Crear un envío de equipo con referencias a gerencias (Usuario) y sedes.
+# Nota: Se pasan las claves foráneas generadas por las relaciones:
+#   gerenciaEncargadaId - Usuario que envía
+#   gerenciaReceptoraId - Usuario que recibe
+#   sedeDestinoId       - Sede destino
+#   sedeOrigenId        - Sede origen
+mutation CrearEnvioEquipo(
+  $gerenciaEncargadaId: UUID!,
+  $gerenciaReceptoraId: UUID!,
+  $sedeDestinoId: UUID!,
+  $sedeOrigenId: UUID!,
+  $tipoEnvio: String!,
+  $fechaEnvio: Date!,
+  $descripcionGeneral: String
+) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear un envío.") {
+  envioEquipo_insert(data: {
+    gerenciaEncargadaId: $gerenciaEncargadaId
+    gerenciaReceptoraId: $gerenciaReceptoraId
+    sedeDestinoId: $sedeDestinoId
+    sedeOrigenId: $sedeOrigenId
+    tipoEnvio: $tipoEnvio
+    fechaEnvio: $fechaEnvio
+    descripcionGeneral: $descripcionGeneral
+  })
+}
+
+# Registrar la recepción de un envío (actualizar fechaRecepcion).
+mutation RecepcionarEnvio($id: UUID!, $fechaRecepcion: Date!)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede recepcionar un envío.") {
+  envioEquipo_update(key: { id: $id }, data: { fechaRecepcion: $fechaRecepcion })
+}
+
+# Eliminar un envío por ID.
+mutation EliminarEnvioEquipo($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar un envío.") {
+  envioEquipo_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# ASISTENCIA
+# ─────────────────────────────────────────────
+
+# Registrar la asistencia de un usuario (turno completo).
+# usuarioId es la clave foránea generada por la relación con Usuario.
+mutation RegistrarAsistencia(
+  $usuarioId: UUID!,
+  $fecha: Date!,
+  $horaEntradaManana: Timestamp!,
+  $horaSalidaManana: Timestamp!,
+  $horaEntradaTarde: Timestamp,
+  $horaSalidaTarde: Timestamp
+) @auth(level: USER) {
+  asistencia_insert(data: {
+    usuarioId: $usuarioId
+    fecha: $fecha
+    horaEntradaManana: $horaEntradaManana
+    horaSalidaManana: $horaSalidaManana
+    horaEntradaTarde: $horaEntradaTarde
+    horaSalidaTarde: $horaSalidaTarde
+  })
+}
+
+# Registrar la entrada matutina del usuario autenticado usando auth.uid.
+# Se asigna automáticamente una salida por defecto a las 11:50 AM.
+mutation RegistrarEntradaManana($horaEntrada: Timestamp!, $horaSalidaManana: Timestamp!) @auth(level: USER) {
+  asistencia_insert(data: {
+    usuarioId_expr: "auth.uid"
+    fecha_expr: "request.time"
+    horaEntradaManana: $horaEntrada
+    horaSalidaManana: $horaSalidaManana
+  })
+}
+
+# Actualizar una asistencia por ID.
+mutation ActualizarAsistencia(
+  $id: UUID!,
+  $horaSalidaManana: Timestamp!,
+  $horaEntradaTarde: Timestamp,
+  $horaSalidaTarde: Timestamp
+) @auth(level: USER) {
+  asistencia_update(key: { id: $id }, data: {
+    horaSalidaManana: $horaSalidaManana
+    horaEntradaTarde: $horaEntradaTarde
+    horaSalidaTarde: $horaSalidaTarde
+  })
+}
+
+# Eliminar un registro de asistencia por ID.
+mutation EliminarAsistencia($id: UUID!) @auth(level: NO_ACCESS) {
+  asistencia_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# COMPAÑIA CONTRATISTA
+# ─────────────────────────────────────────────
+
+# Crear una nueva compañía contratista.
+mutation CrearCompaniaContratista($nombre: String!, $rif: String, $telefonoContacto: String)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear una compañía contratista.") {
+  companiaContratista_insert(data: { nombre: $nombre, rif: $rif, telefonoContacto: $telefonoContacto })
+}
+
+# Actualizar una compañía contratista por ID.
+mutation ActualizarCompaniaContratista($id: UUID!, $nombre: String!, $telefonoContacto: String)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede actualizar una compañía contratista.") {
+  companiaContratista_update(key: { id: $id }, data: { nombre: $nombre, telefonoContacto: $telefonoContacto })
+}
+
+# Eliminar una compañía contratista por ID.
+mutation EliminarCompaniaContratista($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar una compañía contratista.") {
+  companiaContratista_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# CUADRILLA
+# ─────────────────────────────────────────────
+
+# Crear una cuadrilla asociada a una compañía contratista.
+# companiaContratistaId es la clave foránea generada por la relación.
+mutation CrearCuadrilla($nombreIdentificador: String!, $tamanoAproximado: Int, $companiaContratistaId: UUID!)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear una cuadrilla.") {
+  cuadrilla_insert(data: {
+    nombreIdentificador: $nombreIdentificador
+    tamanoAproximado: $tamanoAproximado
+    companiaContratistaId: $companiaContratistaId
+  })
+}
+
+# Actualizar una cuadrilla por ID.
+mutation ActualizarCuadrilla($id: UUID!, $nombreIdentificador: String!, $tamanoAproximado: Int)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede actualizar una cuadrilla.") {
+  cuadrilla_update(key: { id: $id }, data: { nombreIdentificador: $nombreIdentificador, tamanoAproximado: $tamanoAproximado })
+}
+
+# Eliminar una cuadrilla por ID.
+mutation EliminarCuadrilla($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar una cuadrilla.") {
+  cuadrilla_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# EQUIPAMENTO
+# ─────────────────────────────────────────────
+
+# Crear un nuevo equipamento (herramienta o equipo para préstamo).
+mutation CrearEquipamento($nombre: String!, $descripcion: String, $datosVarios: String, $modelo: String)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede crear un equipamento.") {
+  equipamento_insert(data: { nombre: $nombre, descripcion: $descripcion, datosVarios: $datosVarios, modelo: $modelo })
+}
+
+# Actualizar un equipamento por ID.
+mutation ActualizarEquipamento($id: UUID!, $nombre: String!, $descripcion: String)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede actualizar un equipamento.") {
+  equipamento_update(key: { id: $id }, data: { nombre: $nombre, descripcion: $descripcion })
+}
+
+# Eliminar un equipamento por ID.
+mutation EliminarEquipamento($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar un equipamento.") {
+  equipamento_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# EQUIPAMENTO PRESTADO
+# ─────────────────────────────────────────────
+
+# Registrar un préstamo de equipamento a una compañía contratista.
+# companiaPrestadaId es la clave foránea generada por la relación con CompaniaContratista.
+# equipamentoId es la clave foránea generada por la relación con Equipamento.
+mutation PrestarEquipamento(
+  $companiaPrestadaId: UUID!,
+  $equipamentoId: UUID!,
+  $fechaInicio: Date!
+) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede registrar un préstamo.") {
+  equipamentoPrestado_insert(data: {
+    companiaPrestadaId: $companiaPrestadaId
+    equipamentoId: $equipamentoId
+    fechaInicio: $fechaInicio
+  })
+}
+
+# Registrar la devolución de un equipamento prestado.
+mutation DevolverEquipamento($id: UUID!, $fechaDevolucion: Date!)
+@auth(level: PUBLIC, insecureReason: "Cualquier persona puede registrar una devolución.") {
+  equipamentoPrestado_update(key: { id: $id }, data: { fechaDevolucion: $fechaDevolucion })
+}
+
+# Eliminar un registro de préstamo por ID.
+mutation EliminarEquipamentoPrestado($id: UUID!) @auth(level: PUBLIC, insecureReason: "Cualquier persona puede eliminar un registro de préstamo.") {
+  equipamentoPrestado_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# TESORERÍA — MOVIMIENTOS CONTABLES
+# ─────────────────────────────────────────────
+
+# Crear un movimiento de tesorería (avío o retiro).
+# - avío: la Tesorería General envía divisas a la sede → suma al fondo local
+# - retiro: la Gerencia Local usa divisas del fondo → resta al fondo
+# avioRefId solo se envía si tipo == "retiro" (referencia al avío del que descuenta)
+mutation CrearMovimientoTesoreria(
+  $tipo: String!,
+  $monto: Float!,
+  $moneda: String!,
+  $tasaBCV: Float!,
+  $fechaTasa: Date!,
+  $concepto: String!,
+  $sedeId: UUID!,
+  $creadoPorId: UUID!,
+  $avioRefId: UUID
+) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  movimientoTesoreria_insert(data: {
+    tipo: $tipo
+    monto: $monto
+    moneda: $moneda
+    tasaBCV: $tasaBCV
+    fechaTasa: $fechaTasa
+    concepto: $concepto
+    estado: "pendiente"
+    sedeId: $sedeId
+    creadoPorId: $creadoPorId
+    creadoEn_expr: "request.time"
+    avioRefId: $avioRefId
+  })
+}
+
+# Aprobar un movimiento de tesorería pendiente.
+# Solo la Tesorería General puede aprobar avíos.
+# Los retiros se consideran aprobados implícitamente por la Gerencia Local al registrarlos,
+# pero se puede cambiar estado explícitamente si se requiere flujo de aprobación local.
+mutation AprobarMovimientoTesoreria(
+  $id: UUID!,
+  $aprobadoPorId: UUID!
+) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  movimientoTesoreria_update(key: { id: $id }, data: {
+    estado: "aprobado"
+    aprobadoPorId: $aprobadoPorId
+    aprobadoEn_expr: "request.time"
+  })
+}
+
+# Anular un movimiento de tesorería.
+# El registro es inmutable: no se edita ni borra.
+# Las correcciones se hacen mediante este asiento de anulación
+# que referencia al movimiento original (anulaAId).
+mutation AnularMovimientoTesoreria(
+  $id: UUID!,
+  $anulaAId: UUID!
+) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  movimientoTesoreria_update(key: { id: $id }, data: {
+    estado: "anulado"
+    anulaAId: $anulaAId
+  })
+}
+
+# Eliminar un movimiento de tesorería.
+# Bloqueado con NO_ACCESS para respetar la regla de inmutabilidad del módulo.
+# Los movimientos no se eliminan, se anulan vía AnularMovimientoTesoreria.
+mutation EliminarMovimientoTesoreria($id: UUID!) @auth(level: NO_ACCESS, insecureReason: "Inmutable por diseño: los movimientos no se eliminan, se anulan.") {
+  movimientoTesoreria_delete(key: { id: $id })
+}
+
+# ─────────────────────────────────────────────
+# TESORERÍA — FONDOS POR SEDE
+# ─────────────────────────────────────────────
+
+# Crear un nuevo fondo para una sede.
+# Cada sede tiene un solo fondo (relación uno-a-uno).
+mutation CrearFondo(
+  $sedeId: UUID!,
+  $saldo: Float!,
+  $moneda: String!
+) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  fondo_insert(data: {
+    sedeId: $sedeId
+    saldo: $saldo
+    moneda: $moneda
+    ultimaActualizacion_expr: "request.time"
+  })
+}
+
+# Actualizar el saldo de un fondo existente por ID.
+# El saldo se recalcula como Σ avíos aprobados − Σ retiros
+# pero se actualiza manualmente aquí para mantener consistencia.
+mutation ActualizarFondo(
+  $id: UUID!,
+  $saldo: Float!,
+  $moneda: String!
+) @auth(level: PUBLIC, insecureReason: "Temporalmente público para desarrollo MVP.") {
+  fondo_update(key: { id: $id }, data: {
+    saldo: $saldo
+    moneda: $moneda
+    ultimaActualizacion_expr: "request.time"
+  })
+}
+
+# Eliminar un fondo por ID.
+# Bloqueado para evitar pérdida accidental de datos de saldo.
+mutation EliminarFondo($id: UUID!) @auth(level: NO_ACCESS, insecureReason: "Los fondos no deben eliminarse manualmente.") {
+  fondo_delete(key: { id: $id })
+}
