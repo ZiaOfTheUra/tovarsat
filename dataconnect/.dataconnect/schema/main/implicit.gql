@@ -1,0 +1,124 @@
+extend type Asistencia {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Asistencia", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Asistencia`.`usuario`. It must match the value of `Usuario`.`id`. See `@ref` for how to customize it.
+  """
+  usuarioId: UUID @fdc_generated(from: "Asistencia.usuario", purpose: IMPLICIT_REF_FIELD)
+}
+extend type CompaniaContratista {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "CompaniaContratista", purpose: IMPLICIT_KEY_FIELD)
+}
+extend type Cuadrilla {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Cuadrilla", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Cuadrilla`.`companiaContratista`. It must match the value of `CompaniaContratista`.`id`. See `@ref` for how to customize it.
+  """
+  companiaContratistaId: UUID @fdc_generated(from: "Cuadrilla.companiaContratista", purpose: IMPLICIT_REF_FIELD)
+}
+extend type EnvioEquipo {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "EnvioEquipo", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EnvioEquipo`.`gerenciaEncargada`. It must match the value of `Usuario`.`id`. See `@ref` for how to customize it.
+  """
+  gerenciaEncargadaId: UUID @fdc_generated(from: "EnvioEquipo.gerenciaEncargada", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EnvioEquipo`.`gerenciaReceptora`. It must match the value of `Usuario`.`id`. See `@ref` for how to customize it.
+  """
+  gerenciaReceptoraId: UUID @fdc_generated(from: "EnvioEquipo.gerenciaReceptora", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EnvioEquipo`.`sedeDestino`. It must match the value of `Sede`.`id`. See `@ref` for how to customize it.
+  """
+  sedeDestinoId: UUID @fdc_generated(from: "EnvioEquipo.sedeDestino", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EnvioEquipo`.`sedeOrigen`. It must match the value of `Sede`.`id`. See `@ref` for how to customize it.
+  """
+  sedeOrigenId: UUID @fdc_generated(from: "EnvioEquipo.sedeOrigen", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Equipamento {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Equipamento", purpose: IMPLICIT_KEY_FIELD)
+}
+extend type EquipamentoPrestado {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "EquipamentoPrestado", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EquipamentoPrestado`.`companiaPrestada`. It must match the value of `CompaniaContratista`.`id`. See `@ref` for how to customize it.
+  """
+  companiaPrestadaId: UUID @fdc_generated(from: "EquipamentoPrestado.companiaPrestada", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EquipamentoPrestado`.`equipamento`. It must match the value of `Equipamento`.`id`. See `@ref` for how to customize it.
+  """
+  equipamentoId: UUID @fdc_generated(from: "EquipamentoPrestado.equipamento", purpose: IMPLICIT_REF_FIELD)
+}
+extend type EquipoInventario {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "EquipoInventario", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EquipoInventario`.`tipoEquipoModelo`. It must match the value of `TipoEquipo`.`id`. See `@ref` for how to customize it.
+  """
+  tipoEquipoModeloId: UUID @fdc_generated(from: "EquipoInventario.tipoEquipoModelo", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `EquipoInventario`.`ubicacionActual`. It must match the value of `Sede`.`id`. See `@ref` for how to customize it.
+  """
+  ubicacionActualId: UUID @fdc_generated(from: "EquipoInventario.ubicacionActual", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Fondo {
+  """
+  ✨ Implicit foreign key field based on `Fondo`.`sede`. It must match the value of `Sede`.`id`. See `@ref` for how to customize it.
+  """
+  sedeId: UUID! @fdc_generated(from: "Fondo.sede", purpose: IMPLICIT_REF_FIELD)
+}
+extend type MovimientoTesoreria {
+  """
+  ✨ Implicit foreign key field based on `MovimientoTesoreria`.`aprobadoPor`. It must match the value of `Usuario`.`id`. See `@ref` for how to customize it.
+  """
+  aprobadoPorId: UUID @fdc_generated(from: "MovimientoTesoreria.aprobadoPor", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `MovimientoTesoreria`.`creadoPor`. It must match the value of `Usuario`.`id`. See `@ref` for how to customize it.
+  """
+  creadoPorId: UUID @fdc_generated(from: "MovimientoTesoreria.creadoPor", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `MovimientoTesoreria`.`sede`. It must match the value of `Sede`.`id`. See `@ref` for how to customize it.
+  """
+  sedeId: UUID @fdc_generated(from: "MovimientoTesoreria.sede", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Sede {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Sede", purpose: IMPLICIT_KEY_FIELD)
+}
+extend type TipoEquipo {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "TipoEquipo", purpose: IMPLICIT_KEY_FIELD)
+}
+extend type Usuario {
+  """
+  ✨ Implicit primary key field. It's a UUID column default to a generated new value. See `@table` for how to customize it.
+  """
+  id: UUID! @default(expr: "uuidV4()") @fdc_generated(from: "Usuario", purpose: IMPLICIT_KEY_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Usuario`.`sede`. It must match the value of `Sede`.`id`. See `@ref` for how to customize it.
+  """
+  sedeId: UUID @fdc_generated(from: "Usuario.sede", purpose: IMPLICIT_REF_FIELD)
+}

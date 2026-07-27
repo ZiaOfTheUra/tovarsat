@@ -7,9 +7,6 @@ yarn-error.log*
 firebase-debug.log*
 firebase-debug.*.log*
 
-# Firebase cache
-.firebase/
-
 # Firebase config
 
 # Uncomment this if you'd like others to create their own Firebase project.
@@ -67,9 +64,6 @@ node_modules/
 .env*.local
 .env.*.local
 
-# dataconnect generated files
-.dataconnect
-
 # Expo / React Native
 .expo/
 dist/
@@ -78,15 +72,19 @@ expo-env.d.ts
 *.tsbuildinfo
 
 # Native generated files
-.kotlin/
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
 /ios
-/android
 
+# Android native (ignore build artifacts only)
+**/android/.gradle/
+**/android/build/
+**/android/app/build/
+**/android/app/.cxx/
+**/android/.kotlin/
 # Metro
 .metro-health-check*
 

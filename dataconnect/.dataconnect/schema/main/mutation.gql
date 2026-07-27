@@ -1,0 +1,1346 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Asistencia` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  asistencia_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Asistencia_Data!
+  ): Asistencia_KeyOutput! @fdc_generated(from: "Asistencia", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `CompaniaContratista` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  companiaContratista_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: CompaniaContratista_Data!
+  ): CompaniaContratista_KeyOutput! @fdc_generated(from: "CompaniaContratista", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Cuadrilla` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  cuadrilla_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Cuadrilla_Data!
+  ): Cuadrilla_KeyOutput! @fdc_generated(from: "Cuadrilla", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `EnvioEquipo` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  envioEquipo_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: EnvioEquipo_Data!
+  ): EnvioEquipo_KeyOutput! @fdc_generated(from: "EnvioEquipo", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Equipamento` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  equipamento_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Equipamento_Data!
+  ): Equipamento_KeyOutput! @fdc_generated(from: "Equipamento", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `EquipamentoPrestado` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  equipamentoPrestado_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: EquipamentoPrestado_Data!
+  ): EquipamentoPrestado_KeyOutput! @fdc_generated(from: "EquipamentoPrestado", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `EquipoInventario` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  equipoInventario_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: EquipoInventario_Data!
+  ): EquipoInventario_KeyOutput! @fdc_generated(from: "EquipoInventario", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Fondo` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  fondo_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Fondo_Data!
+  ): Fondo_KeyOutput! @fdc_generated(from: "Fondo", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `MovimientoTesoreria` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  movimientoTesoreria_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: MovimientoTesoreria_Data!
+  ): MovimientoTesoreria_KeyOutput! @fdc_generated(from: "MovimientoTesoreria", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Sede` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  sede_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Sede_Data!
+  ): Sede_KeyOutput! @fdc_generated(from: "Sede", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `TipoEquipo` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  tipoEquipo_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: TipoEquipo_Data!
+  ): TipoEquipo_KeyOutput! @fdc_generated(from: "TipoEquipo", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Usuario` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  usuario_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Usuario_Data!
+  ): Usuario_KeyOutput! @fdc_generated(from: "Usuario", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Asistencia` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  asistencia_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Asistencia_Data!]!
+  ): [Asistencia_KeyOutput!]! @fdc_generated(from: "Asistencia", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `CompaniaContratista` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  companiaContratista_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [CompaniaContratista_Data!]!
+  ): [CompaniaContratista_KeyOutput!]! @fdc_generated(from: "CompaniaContratista", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Cuadrilla` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  cuadrilla_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Cuadrilla_Data!]!
+  ): [Cuadrilla_KeyOutput!]! @fdc_generated(from: "Cuadrilla", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `EnvioEquipo` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  envioEquipo_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [EnvioEquipo_Data!]!
+  ): [EnvioEquipo_KeyOutput!]! @fdc_generated(from: "EnvioEquipo", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Equipamento` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  equipamento_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Equipamento_Data!]!
+  ): [Equipamento_KeyOutput!]! @fdc_generated(from: "Equipamento", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `EquipamentoPrestado` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  equipamentoPrestado_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [EquipamentoPrestado_Data!]!
+  ): [EquipamentoPrestado_KeyOutput!]! @fdc_generated(from: "EquipamentoPrestado", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `EquipoInventario` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  equipoInventario_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [EquipoInventario_Data!]!
+  ): [EquipoInventario_KeyOutput!]! @fdc_generated(from: "EquipoInventario", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Fondo` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  fondo_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Fondo_Data!]!
+  ): [Fondo_KeyOutput!]! @fdc_generated(from: "Fondo", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `MovimientoTesoreria` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  movimientoTesoreria_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [MovimientoTesoreria_Data!]!
+  ): [MovimientoTesoreria_KeyOutput!]! @fdc_generated(from: "MovimientoTesoreria", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Sede` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  sede_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Sede_Data!]!
+  ): [Sede_KeyOutput!]! @fdc_generated(from: "Sede", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `TipoEquipo` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  tipoEquipo_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [TipoEquipo_Data!]!
+  ): [TipoEquipo_KeyOutput!]! @fdc_generated(from: "TipoEquipo", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Usuario` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  usuario_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Usuario_Data!]!
+  ): [Usuario_KeyOutput!]! @fdc_generated(from: "Usuario", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Asistencia` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Asistencia`.
+  """
+  asistencia_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Asistencia_Data!
+  ): Asistencia_KeyOutput! @fdc_generated(from: "Asistencia", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `CompaniaContratista` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CompaniaContratista`.
+  """
+  companiaContratista_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: CompaniaContratista_Data!
+  ): CompaniaContratista_KeyOutput! @fdc_generated(from: "CompaniaContratista", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Cuadrilla` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Cuadrilla`.
+  """
+  cuadrilla_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Cuadrilla_Data!
+  ): Cuadrilla_KeyOutput! @fdc_generated(from: "Cuadrilla", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `EnvioEquipo` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EnvioEquipo`.
+  """
+  envioEquipo_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: EnvioEquipo_Data!
+  ): EnvioEquipo_KeyOutput! @fdc_generated(from: "EnvioEquipo", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Equipamento` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Equipamento`.
+  """
+  equipamento_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Equipamento_Data!
+  ): Equipamento_KeyOutput! @fdc_generated(from: "Equipamento", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `EquipamentoPrestado` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EquipamentoPrestado`.
+  """
+  equipamentoPrestado_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: EquipamentoPrestado_Data!
+  ): EquipamentoPrestado_KeyOutput! @fdc_generated(from: "EquipamentoPrestado", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `EquipoInventario` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EquipoInventario`.
+  """
+  equipoInventario_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: EquipoInventario_Data!
+  ): EquipoInventario_KeyOutput! @fdc_generated(from: "EquipoInventario", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Fondo` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Fondo`.
+  """
+  fondo_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Fondo_Data!
+  ): Fondo_KeyOutput! @fdc_generated(from: "Fondo", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `MovimientoTesoreria` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `MovimientoTesoreria`.
+  """
+  movimientoTesoreria_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: MovimientoTesoreria_Data!
+  ): MovimientoTesoreria_KeyOutput! @fdc_generated(from: "MovimientoTesoreria", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Sede` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Sede`.
+  """
+  sede_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Sede_Data!
+  ): Sede_KeyOutput! @fdc_generated(from: "Sede", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `TipoEquipo` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `TipoEquipo`.
+  """
+  tipoEquipo_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: TipoEquipo_Data!
+  ): TipoEquipo_KeyOutput! @fdc_generated(from: "TipoEquipo", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Usuario` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Usuario`.
+  """
+  usuario_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Usuario_Data!
+  ): Usuario_KeyOutput! @fdc_generated(from: "Usuario", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Asistencia` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Asistencia`.
+  """
+  asistencia_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Asistencia_Data!]!
+  ): [Asistencia_KeyOutput!]! @fdc_generated(from: "Asistencia", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `CompaniaContratista` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `CompaniaContratista`.
+  """
+  companiaContratista_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [CompaniaContratista_Data!]!
+  ): [CompaniaContratista_KeyOutput!]! @fdc_generated(from: "CompaniaContratista", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Cuadrilla` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Cuadrilla`.
+  """
+  cuadrilla_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Cuadrilla_Data!]!
+  ): [Cuadrilla_KeyOutput!]! @fdc_generated(from: "Cuadrilla", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `EnvioEquipo` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EnvioEquipo`.
+  """
+  envioEquipo_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [EnvioEquipo_Data!]!
+  ): [EnvioEquipo_KeyOutput!]! @fdc_generated(from: "EnvioEquipo", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Equipamento` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Equipamento`.
+  """
+  equipamento_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Equipamento_Data!]!
+  ): [Equipamento_KeyOutput!]! @fdc_generated(from: "Equipamento", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `EquipamentoPrestado` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EquipamentoPrestado`.
+  """
+  equipamentoPrestado_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [EquipamentoPrestado_Data!]!
+  ): [EquipamentoPrestado_KeyOutput!]! @fdc_generated(from: "EquipamentoPrestado", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `EquipoInventario` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `EquipoInventario`.
+  """
+  equipoInventario_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [EquipoInventario_Data!]!
+  ): [EquipoInventario_KeyOutput!]! @fdc_generated(from: "EquipoInventario", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Fondo` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Fondo`.
+  """
+  fondo_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Fondo_Data!]!
+  ): [Fondo_KeyOutput!]! @fdc_generated(from: "Fondo", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `MovimientoTesoreria` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `MovimientoTesoreria`.
+  """
+  movimientoTesoreria_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [MovimientoTesoreria_Data!]!
+  ): [MovimientoTesoreria_KeyOutput!]! @fdc_generated(from: "MovimientoTesoreria", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Sede` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Sede`.
+  """
+  sede_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Sede_Data!]!
+  ): [Sede_KeyOutput!]! @fdc_generated(from: "Sede", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `TipoEquipo` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `TipoEquipo`.
+  """
+  tipoEquipo_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [TipoEquipo_Data!]!
+  ): [TipoEquipo_KeyOutput!]! @fdc_generated(from: "TipoEquipo", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Usuario` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Usuario`.
+  """
+  usuario_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Usuario_Data!]!
+  ): [Usuario_KeyOutput!]! @fdc_generated(from: "Usuario", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Asistencia` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Asistencia` or `null` if not found.
+  """
+  asistencia_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Asistencia_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Asistencia_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Asistencia_Data!
+  ): Asistencia_KeyOutput @fdc_generated(from: "Asistencia", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `CompaniaContratista` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `CompaniaContratista` or `null` if not found.
+  """
+  companiaContratista_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CompaniaContratista_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CompaniaContratista_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: CompaniaContratista_Data!
+  ): CompaniaContratista_KeyOutput @fdc_generated(from: "CompaniaContratista", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Cuadrilla` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Cuadrilla` or `null` if not found.
+  """
+  cuadrilla_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Cuadrilla_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Cuadrilla_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Cuadrilla_Data!
+  ): Cuadrilla_KeyOutput @fdc_generated(from: "Cuadrilla", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `EnvioEquipo` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `EnvioEquipo` or `null` if not found.
+  """
+  envioEquipo_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EnvioEquipo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EnvioEquipo_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: EnvioEquipo_Data!
+  ): EnvioEquipo_KeyOutput @fdc_generated(from: "EnvioEquipo", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Equipamento` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Equipamento` or `null` if not found.
+  """
+  equipamento_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Equipamento_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Equipamento_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Equipamento_Data!
+  ): Equipamento_KeyOutput @fdc_generated(from: "Equipamento", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `EquipamentoPrestado` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `EquipamentoPrestado` or `null` if not found.
+  """
+  equipamentoPrestado_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EquipamentoPrestado_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EquipamentoPrestado_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: EquipamentoPrestado_Data!
+  ): EquipamentoPrestado_KeyOutput @fdc_generated(from: "EquipamentoPrestado", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `EquipoInventario` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `EquipoInventario` or `null` if not found.
+  """
+  equipoInventario_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EquipoInventario_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EquipoInventario_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: EquipoInventario_Data!
+  ): EquipoInventario_KeyOutput @fdc_generated(from: "EquipoInventario", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Fondo` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Fondo` or `null` if not found.
+  """
+  fondo_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Fondo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Fondo_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Fondo_Data!
+  ): Fondo_KeyOutput @fdc_generated(from: "Fondo", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `MovimientoTesoreria` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `MovimientoTesoreria` or `null` if not found.
+  """
+  movimientoTesoreria_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: MovimientoTesoreria_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: MovimientoTesoreria_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: MovimientoTesoreria_Data!
+  ): MovimientoTesoreria_KeyOutput @fdc_generated(from: "MovimientoTesoreria", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Sede` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Sede` or `null` if not found.
+  """
+  sede_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Sede_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Sede_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Sede_Data!
+  ): Sede_KeyOutput @fdc_generated(from: "Sede", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `TipoEquipo` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `TipoEquipo` or `null` if not found.
+  """
+  tipoEquipo_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: TipoEquipo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TipoEquipo_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: TipoEquipo_Data!
+  ): TipoEquipo_KeyOutput @fdc_generated(from: "TipoEquipo", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Usuario` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Usuario` or `null` if not found.
+  """
+  usuario_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Usuario_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Usuario_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Usuario_Data!
+  ): Usuario_KeyOutput @fdc_generated(from: "Usuario", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Asistencia` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  asistencia_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Asistencia_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Asistencia_Data!
+  ): Int! @fdc_generated(from: "Asistencia", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `CompaniaContratista` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  companiaContratista_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: CompaniaContratista_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: CompaniaContratista_Data!
+  ): Int! @fdc_generated(from: "CompaniaContratista", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Cuadrilla` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  cuadrilla_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Cuadrilla_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Cuadrilla_Data!
+  ): Int! @fdc_generated(from: "Cuadrilla", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `EnvioEquipo` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  envioEquipo_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: EnvioEquipo_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: EnvioEquipo_Data!
+  ): Int! @fdc_generated(from: "EnvioEquipo", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Equipamento` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  equipamento_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Equipamento_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Equipamento_Data!
+  ): Int! @fdc_generated(from: "Equipamento", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `EquipamentoPrestado` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  equipamentoPrestado_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: EquipamentoPrestado_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: EquipamentoPrestado_Data!
+  ): Int! @fdc_generated(from: "EquipamentoPrestado", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `EquipoInventario` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  equipoInventario_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: EquipoInventario_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: EquipoInventario_Data!
+  ): Int! @fdc_generated(from: "EquipoInventario", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Fondo` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  fondo_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Fondo_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Fondo_Data!
+  ): Int! @fdc_generated(from: "Fondo", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `MovimientoTesoreria` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  movimientoTesoreria_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: MovimientoTesoreria_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: MovimientoTesoreria_Data!
+  ): Int! @fdc_generated(from: "MovimientoTesoreria", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Sede` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  sede_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Sede_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Sede_Data!
+  ): Int! @fdc_generated(from: "Sede", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `TipoEquipo` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  tipoEquipo_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: TipoEquipo_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: TipoEquipo_Data!
+  ): Int! @fdc_generated(from: "TipoEquipo", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Usuario` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  usuario_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Usuario_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Usuario_Data!
+  ): Int! @fdc_generated(from: "Usuario", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Asistencia` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  asistencia_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Asistencia_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Asistencia_FirstRow
+  ): Asistencia_KeyOutput @fdc_generated(from: "Asistencia", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `CompaniaContratista` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  companiaContratista_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CompaniaContratista_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CompaniaContratista_FirstRow
+  ): CompaniaContratista_KeyOutput @fdc_generated(from: "CompaniaContratista", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Cuadrilla` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  cuadrilla_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Cuadrilla_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Cuadrilla_FirstRow
+  ): Cuadrilla_KeyOutput @fdc_generated(from: "Cuadrilla", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `EnvioEquipo` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  envioEquipo_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EnvioEquipo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EnvioEquipo_FirstRow
+  ): EnvioEquipo_KeyOutput @fdc_generated(from: "EnvioEquipo", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Equipamento` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  equipamento_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Equipamento_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Equipamento_FirstRow
+  ): Equipamento_KeyOutput @fdc_generated(from: "Equipamento", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `EquipamentoPrestado` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  equipamentoPrestado_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EquipamentoPrestado_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EquipamentoPrestado_FirstRow
+  ): EquipamentoPrestado_KeyOutput @fdc_generated(from: "EquipamentoPrestado", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `EquipoInventario` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  equipoInventario_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EquipoInventario_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EquipoInventario_FirstRow
+  ): EquipoInventario_KeyOutput @fdc_generated(from: "EquipoInventario", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Fondo` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  fondo_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Fondo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Fondo_FirstRow
+  ): Fondo_KeyOutput @fdc_generated(from: "Fondo", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `MovimientoTesoreria` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  movimientoTesoreria_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: MovimientoTesoreria_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: MovimientoTesoreria_FirstRow
+  ): MovimientoTesoreria_KeyOutput @fdc_generated(from: "MovimientoTesoreria", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Sede` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  sede_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Sede_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Sede_FirstRow
+  ): Sede_KeyOutput @fdc_generated(from: "Sede", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `TipoEquipo` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  tipoEquipo_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: TipoEquipo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TipoEquipo_FirstRow
+  ): TipoEquipo_KeyOutput @fdc_generated(from: "TipoEquipo", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Usuario` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  usuario_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Usuario_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Usuario_FirstRow
+  ): Usuario_KeyOutput @fdc_generated(from: "Usuario", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Asistencia` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  asistencia_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Asistencia_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Asistencia", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `CompaniaContratista` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  companiaContratista_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: CompaniaContratista_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "CompaniaContratista", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Cuadrilla` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  cuadrilla_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Cuadrilla_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Cuadrilla", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `EnvioEquipo` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  envioEquipo_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: EnvioEquipo_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "EnvioEquipo", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Equipamento` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  equipamento_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Equipamento_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Equipamento", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `EquipamentoPrestado` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  equipamentoPrestado_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: EquipamentoPrestado_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "EquipamentoPrestado", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `EquipoInventario` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  equipoInventario_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: EquipoInventario_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "EquipoInventario", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Fondo` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  fondo_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Fondo_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Fondo", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `MovimientoTesoreria` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  movimientoTesoreria_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: MovimientoTesoreria_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "MovimientoTesoreria", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Sede` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  sede_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Sede_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Sede", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `TipoEquipo` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  tipoEquipo_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: TipoEquipo_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "TipoEquipo", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Usuario` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  usuario_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Usuario_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Usuario", purpose: DELETE_MULTIPLE)
+}

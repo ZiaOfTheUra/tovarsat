@@ -40,4 +40,10 @@ example
 
 # generated native folders
 /ios
-/android
+
+# Android native (ignore build artifacts only)
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/app/.cxx/
+/android/.kotlin/

@@ -1,0 +1,638 @@
+extend type Query {
+  """
+  ✨ Look up a single `Asistencia` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  asistencia(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Asistencia_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Asistencia_FirstRow
+  ): Asistencia @fdc_generated(from: "Asistencia", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `CompaniaContratista` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  companiaContratista(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: CompaniaContratista_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: CompaniaContratista_FirstRow
+  ): CompaniaContratista @fdc_generated(from: "CompaniaContratista", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Cuadrilla` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  cuadrilla(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Cuadrilla_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Cuadrilla_FirstRow
+  ): Cuadrilla @fdc_generated(from: "Cuadrilla", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `EnvioEquipo` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  envioEquipo(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EnvioEquipo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EnvioEquipo_FirstRow
+  ): EnvioEquipo @fdc_generated(from: "EnvioEquipo", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Equipamento` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  equipamento(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Equipamento_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Equipamento_FirstRow
+  ): Equipamento @fdc_generated(from: "Equipamento", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `EquipamentoPrestado` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  equipamentoPrestado(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EquipamentoPrestado_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EquipamentoPrestado_FirstRow
+  ): EquipamentoPrestado @fdc_generated(from: "EquipamentoPrestado", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `EquipoInventario` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  equipoInventario(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: EquipoInventario_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: EquipoInventario_FirstRow
+  ): EquipoInventario @fdc_generated(from: "EquipoInventario", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Fondo` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  fondo(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Fondo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Fondo_FirstRow
+  ): Fondo @fdc_generated(from: "Fondo", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `MovimientoTesoreria` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  movimientoTesoreria(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: MovimientoTesoreria_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: MovimientoTesoreria_FirstRow
+  ): MovimientoTesoreria @fdc_generated(from: "MovimientoTesoreria", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Sede` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  sede(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Sede_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Sede_FirstRow
+  ): Sede @fdc_generated(from: "Sede", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `TipoEquipo` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  tipoEquipo(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: TipoEquipo_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TipoEquipo_FirstRow
+  ): TipoEquipo @fdc_generated(from: "TipoEquipo", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Usuario` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  usuario(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Usuario_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Usuario_FirstRow
+  ): Usuario @fdc_generated(from: "Usuario", purpose: QUERY_SINGLE)
+  """
+  ✨ List `Asistencia` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  asistencias(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Asistencia_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Asistencia_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Asistencia_Having
+  ): [Asistencia!]! @fdc_generated(from: "Asistencia", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `CompaniaContratista` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  companiaContratistas(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: CompaniaContratista_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [CompaniaContratista_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: CompaniaContratista_Having
+  ): [CompaniaContratista!]! @fdc_generated(from: "CompaniaContratista", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Cuadrilla` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  cuadrillas(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Cuadrilla_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Cuadrilla_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Cuadrilla_Having
+  ): [Cuadrilla!]! @fdc_generated(from: "Cuadrilla", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `EnvioEquipo` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  envioEquipos(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: EnvioEquipo_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [EnvioEquipo_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: EnvioEquipo_Having
+  ): [EnvioEquipo!]! @fdc_generated(from: "EnvioEquipo", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Equipamento` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  equipamentos(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Equipamento_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Equipamento_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Equipamento_Having
+  ): [Equipamento!]! @fdc_generated(from: "Equipamento", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `EquipamentoPrestado` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  equipamentoPrestados(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: EquipamentoPrestado_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [EquipamentoPrestado_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: EquipamentoPrestado_Having
+  ): [EquipamentoPrestado!]! @fdc_generated(from: "EquipamentoPrestado", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `EquipoInventario` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  equipoInventarios(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: EquipoInventario_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [EquipoInventario_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: EquipoInventario_Having
+  ): [EquipoInventario!]! @fdc_generated(from: "EquipoInventario", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Fondo` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  fondos(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Fondo_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Fondo_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Fondo_Having
+  ): [Fondo!]! @fdc_generated(from: "Fondo", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `MovimientoTesoreria` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  movimientoTesorerias(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: MovimientoTesoreria_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [MovimientoTesoreria_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: MovimientoTesoreria_Having
+  ): [MovimientoTesoreria!]! @fdc_generated(from: "MovimientoTesoreria", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Sede` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  sedes(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Sede_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Sede_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Sede_Having
+  ): [Sede!]! @fdc_generated(from: "Sede", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `TipoEquipo` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  tipoEquipos(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: TipoEquipo_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [TipoEquipo_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: TipoEquipo_Having
+  ): [TipoEquipo!]! @fdc_generated(from: "TipoEquipo", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Usuario` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  usuarios(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Usuario_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Usuario_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Usuario_Having
+  ): [Usuario!]! @fdc_generated(from: "Usuario", purpose: QUERY_MULTIPLE)
+}
