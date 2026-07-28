@@ -20,6 +20,7 @@ type ModalFormularioProps = {
   campos: CampoFormulario[]
   cargando: boolean
   textoBotonConfirmar?: string
+  textoBotonCancelar?: string
   onConfirm: () => void | Promise<void>
   onCancel: () => void
 }
@@ -30,6 +31,7 @@ export function ModalFormulario({
   campos,
   cargando,
   textoBotonConfirmar = 'Guardar',
+  textoBotonCancelar = 'Cancelar',
   onConfirm,
   onCancel,
 }: ModalFormularioProps) {
@@ -113,7 +115,7 @@ export function ModalFormulario({
               onPress={onCancel}
             >
               <Text style={[screenStyles.textoBotonEnviar, { color: theme.onSurface }]}>
-                Cancelar
+                {textoBotonCancelar}
               </Text>
             </Pressable>
             <Pressable

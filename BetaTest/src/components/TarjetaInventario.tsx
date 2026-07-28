@@ -55,7 +55,7 @@ export function TarjetaInventario({
         </View>
 
         <Text style={{ fontSize: 13, fontWeight: '500', lineHeight: 18, color: theme.outline, marginBottom: 8, fontVariant: ['tabular-nums'] as any }}>
-          SKU: {sku}
+           {sku}
         </Text>
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>

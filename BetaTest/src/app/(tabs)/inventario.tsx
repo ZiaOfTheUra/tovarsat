@@ -5,8 +5,9 @@ import { screenStyles } from '@/theme/screenStyles'
 import { BarraSuperior } from '@/components/BarraSuperior'
 import { TarjetaInventario } from '@/components/TarjetaInventario'
 import { MaterialIcons } from '@expo/vector-icons'
-import { guardarModelo, crearInventario, obtenerModelos, obtenerSedes, obtenerInventarioCompleto, type DatosModelo, type DatosInventario } from '@/funciones/funcionesInventario'
+import { guardarModelo, editarModelo, crearInventario, editarInventario, obtenerModelos, obtenerSedes, obtenerInventarioCompleto, type DatosModelo, type DatosInventario } from '@/funciones/funcionesInventario'
 import { ModalFormulario, type CampoFormulario } from '@/components/ModalFormulario'
+import * as serviceAuth from '@/services/auth'
 
 export default function InventoryScreen() {
   const theme = useTheme()
@@ -14,6 +15,13 @@ export default function InventoryScreen() {
   const [modalInventarioVisible, setModalInventarioVisible] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [inventario, setInventario] = useState<any[]>([])
+
+  // Estado para saber si estamos editando (contiene el item a editar, null = crear nuevo)
+  const [editandoModelo, setEditandoModelo] = useState<any | null>(null)
+  const [editandoInventario, setEditandoInventario] = useState<any | null>(null)
+
+  // Estado para controlar visibilidad de botones de edicion basado en el rol
+  const [esAlmacenista, setEsAlmacenista] = useState(false)
 
   // Opciones para selectores
   const [modelosOptions, setModelosOptions] = useState<{ label: string; value: string }[]>([])
@@ -45,21 +53,56 @@ export default function InventoryScreen() {
     setModeloInventario('')
   }
 
+  // ─── Abrir modal para editar modelo ───────────────────────
+  const abrirEditarModelo = (item: any) => {
+    setEditandoModelo(item)
+    setCodigoModelo(item.codigoModelo || '')
+    setNombreModelo(item.nombreIdentificador || '')
+    setMarcaModelo(item.marca || '')
+    setDescripcionModelo(item.descripcion || '')
+    setTecnologiasModelo(item.tecnologias || '')
+    setModalModeloVisible(true)
+  }
+
+  // ─── Abrir modal para editar inventario ───────────────────
+  const abrirEditarInventario = (item: any) => {
+    setEditandoInventario(item)
+    setModeloInventario(item.modeloId || '')
+    setSedeInventario(item.sedeId || '')
+    setCantidadInventario(String(item.cantidad || 0))
+    setModalInventarioVisible(true)
+  }
+
   const handleGuardarModelo = async () => {
     setCargando(true)
     try {
-      await guardarModelo(
-        {
+      if (editandoModelo) {
+        // Modo edición
+        await editarModelo(editandoModelo.id, {
           codigoModelo: codigoModelo,
           nombreIdentificador: nombreModelo,
           marca: marcaModelo,
           descripcion: descripcionModelo,
           tecnologias: tecnologiasModelo,
-        },
-        limpiarFormularioModelo
-      )
-      Alert.alert('Éxito', 'Modelo creado correctamente')
+        })
+        Alert.alert('Éxito', 'Modelo editado correctamente')
+      } else {
+        // Modo creación
+        await guardarModelo(
+          {
+            codigoModelo: codigoModelo,
+            nombreIdentificador: nombreModelo,
+            marca: marcaModelo,
+            descripcion: descripcionModelo,
+            tecnologias: tecnologiasModelo,
+          },
+          limpiarFormularioModelo
+        )
+        Alert.alert('Éxito', 'Modelo creado correctamente')
+      }
       setModalModeloVisible(false)
+      setEditandoModelo(null)
+      limpiarFormularioModelo()
     } catch (e: any) {
       Alert.alert('Error', e.message)
     } finally {
@@ -76,13 +119,25 @@ export default function InventoryScreen() {
 
     setCargando(true)
     try {
-      await crearInventario({
-        modeloId: modeloInventario,
-        cantidad: cantidadNum,
-        sedeId: sedeInventario,
-      })
-      Alert.alert('Éxito', 'Inventario creado correctamente')
+      if (editandoInventario) {
+        // Modo edición
+        await editarInventario(editandoInventario.id, {
+          modeloId: modeloInventario,
+          cantidad: cantidadNum,
+          sedeId: sedeInventario,
+        })
+        Alert.alert('Éxito', 'Inventario editado correctamente')
+      } else {
+        // Modo creación
+        await crearInventario({
+          modeloId: modeloInventario,
+          cantidad: cantidadNum,
+          sedeId: sedeInventario,
+        })
+        Alert.alert('Éxito', 'Inventario creado correctamente')
+      }
       setModalInventarioVisible(false)
+      setEditandoInventario(null)
       limpiarFormularioInventario()
       cargarInventario()
     } catch (e: any) {
@@ -101,6 +156,15 @@ export default function InventoryScreen() {
       console.error('Error al cargar inventario:', e)
     }
   }
+
+  // Verificar rol del usuario al montar la pantalla
+  useEffect(() => {
+    const verificarRol = async () => {
+      const resultado = await serviceAuth.verificarRolUsuario('Almacenista')
+      setEsAlmacenista(resultado)
+    }
+    verificarRol()
+  }, [])
 
   // Cargar inventario al montar la pantalla
   useEffect(() => {
@@ -156,10 +220,15 @@ export default function InventoryScreen() {
             <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>Inventario Activo</Text>
           </View>
 
+          {esAlmacenista && (
           <View style={screenStyles.accionesRapidas}>
             <Pressable
               style={[screenStyles.botonAccion, { backgroundColor: theme.primary }]}
-              onPress={() => setModalModeloVisible(true)}
+              onPress={() => {
+                setEditandoModelo(null)
+                limpiarFormularioModelo()
+                setModalModeloVisible(true)
+              }}
             >
               <MaterialIcons name="add-circle-outline" size={20} color={theme.onPrimary} />
               <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
@@ -168,7 +237,11 @@ export default function InventoryScreen() {
             </Pressable>
             <Pressable
               style={[screenStyles.botonAccion, { backgroundColor: theme.primary }]}
-              onPress={() => setModalInventarioVisible(true)}
+              onPress={() => {
+                setEditandoInventario(null)
+                limpiarFormularioInventario()
+                setModalInventarioVisible(true)
+              }}
             >
               <MaterialIcons name="inventory-2" size={20} color={theme.onPrimary} />
               <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
@@ -176,6 +249,7 @@ export default function InventoryScreen() {
               </Text>
             </Pressable>
           </View>
+          )}
 
           {inventario.map((item) => (
             <TarjetaInventario
@@ -186,33 +260,42 @@ export default function InventoryScreen() {
               location={item.sede || 'Sin sede'}
               stockPercentage={item.cantidad > 0 ? 100 : 0}
               isLowStock={item.cantidad === 0}
-              onPress={() => {}}
+              onPress={() => {
+                if (esAlmacenista) {
+                  abrirEditarInventario(item)
+                }
+              }}
             />
           ))}
         </View>
       </ScrollView>
 
-      {/* Modal para crear nuevo modelo */}
+      {/* Modal para crear/editar modelo */}
       <ModalFormulario
         visible={modalModeloVisible}
-        titulo="Nuevo Modelo"
+        titulo={editandoModelo ? 'Editar Modelo' : 'Nuevo Modelo'}
         campos={camposModelo}
         cargando={cargando}
-        textoBotonConfirmar="Crear Modelo"
+        textoBotonConfirmar={editandoModelo ? 'Guardar Cambios' : 'Crear Modelo'}
         onConfirm={handleGuardarModelo}
-        onCancel={() => setModalModeloVisible(false)}
+        onCancel={() => {
+          setModalModeloVisible(false)
+          setEditandoModelo(null)
+          limpiarFormularioModelo()
+        }}
       />
 
-      {/* Modal para crear nuevo inventario */}
+      {/* Modal para crear/editar inventario */}
       <ModalFormulario
         visible={modalInventarioVisible}
-        titulo="Nuevo Inventario"
+        titulo={editandoInventario ? 'Editar Inventario' : 'Nuevo Inventario'}
         campos={camposInventario}
         cargando={cargando}
-        textoBotonConfirmar="Crear Inventario"
+        textoBotonConfirmar={editandoInventario ? 'Guardar Cambios' : 'Crear Inventario'}
         onConfirm={handleGuardarInventario}
         onCancel={() => {
           setModalInventarioVisible(false)
+          setEditandoInventario(null)
           limpiarFormularioInventario()
         }}
       />
