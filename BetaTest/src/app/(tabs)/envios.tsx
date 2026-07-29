@@ -259,11 +259,11 @@ export default function EnviosScreen() {
         visible={modalAprobacionVisible}
         titulo="Aprobar Envío"
         campos={[
-          { label: 'Producto', value: aprobandoMovimiento?.modelo || '', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none' },
-          { label: 'Cantidad', value: String(aprobandoMovimiento?.cantidad || 0), onChangeText: () => {}, placeholder: '', autoCapitalize: 'none' },
-          { label: 'De', value: aprobandoMovimiento?.sedeOrigen || '', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none' },
-          { label: 'A', value: aprobandoMovimiento?.sedeDestino || '', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none' },
-          { label: 'Estado', value: aprobandoMovimiento?.estadoAprobacion || 'Sin Procesar', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none' },
+          { label: 'Producto', value: aprobandoMovimiento?.modelo || '', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none', soloLectura: true },
+          { label: 'Cantidad', value: String(aprobandoMovimiento?.cantidad || 0), onChangeText: () => {}, placeholder: '', autoCapitalize: 'none', soloLectura: true },
+          { label: 'De', value: aprobandoMovimiento?.sedeOrigen || '', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none', soloLectura: true },
+          { label: 'A', value: aprobandoMovimiento?.sedeDestino || '', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none', soloLectura: true },
+          { label: 'Estado', value: aprobandoMovimiento?.estadoAprobacion || 'Sin Procesar', onChangeText: () => {}, placeholder: '', autoCapitalize: 'none', soloLectura: true },
         ]}
         cargando={cargando}
         textoBotonConfirmar="Aprobar"

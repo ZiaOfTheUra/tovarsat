@@ -66,7 +66,8 @@ export async function verificarRolUsuario(rolRequerido: string): Promise<boolean
   if (!data) return false
   if (data.activo === false) return false
 
-  return data.rol === rolRequerido
+  // Comparacion case-insensitive para evitar problemas de mayusculas/minusculas
+  return String(data.rol).toLowerCase() === String(rolRequerido).toLowerCase()
 }
 
 /**

@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router'
 import { useTheme } from '@/theme/useTheme'
 import { screenStyles } from '@/theme/screenStyles'
 import { iniciarSesion } from '@/services/auth'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
 export default function LoginScreen() {
   const theme = useTheme()
@@ -34,6 +36,21 @@ export default function LoginScreen() {
 
     try {
       await iniciarSesion(email.trim(), password)
+
+      // Verificar que el usuario esté activo en Firestore
+      const uid = auth().currentUser?.uid
+      if (uid) {
+        const doc = await firestore().collection('usuarios').doc(uid).get()
+        const data = doc.data()
+
+        // Si no existe en Firestore o está desactivado, rechazamos el login
+        if (!data || data.activo === false) {
+          await auth().signOut()
+          setError('Usuario desactivado o no registrado. Contacta a Gerencia Local.')
+          return
+        }
+      }
+
       // Redirigir explícitamente al dashboard después del login exitoso
       router.replace('/(tabs)/main')
     } catch (err: any) {
@@ -208,41 +225,10 @@ export default function LoginScreen() {
           </Pressable>
 
           {/* Divisor */}
-          <View style={screenStyles.divisor}>
-            <View style={[screenStyles.lineaDivisor, { backgroundColor: theme.outlineVariant }]} />
-            <Text style={[screenStyles.textoDivisor, { color: theme.outlineVariant }]}>
-              O CONTINÚA CON
-            </Text>
-            <View style={[screenStyles.lineaDivisor, { backgroundColor: theme.outlineVariant }]} />
-          </View>
+
 
           {/* Botones secundarios */}
-          <View style={screenStyles.cuadriculaSocial}>
-            <Pressable
-              style={({ pressed }) => [
-                screenStyles.botonSocial,
-                {
-                  borderColor: theme.outlineVariant,
-                  opacity: pressed ? 0.8 : 1,
-                },
-              ]}
-            >
-              <Text style={[screenStyles.iconoBotonSocial, { color: theme.onSurface }]}>🔐</Text>
-              <Text style={{ color: theme.onSurface, fontSize: 16 }}>Biométrico</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                screenStyles.botonSocial,
-                {
-                  borderColor: theme.outlineVariant,
-                  opacity: pressed ? 0.8 : 1,
-                },
-              ]}
-            >
-              <Text style={[screenStyles.iconoBotonSocial, { color: theme.onSurface }]}>🔑</Text>
-              <Text style={{ color: theme.onSurface, fontSize: 16 }}>SSO</Text>
-            </Pressable>
-          </View>
+
         </View>
 
         {/* Pie de página */}

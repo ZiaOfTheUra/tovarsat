@@ -5,7 +5,8 @@ import { screenStyles } from '@/theme/screenStyles'
 import { BarraSuperior } from '@/components/BarraSuperior'
 import { TarjetaInventario } from '@/components/TarjetaInventario'
 import { MaterialIcons } from '@expo/vector-icons'
-import { guardarModelo, editarModelo, crearInventario, editarInventario, obtenerModelos, obtenerSedes, obtenerInventarioCompleto, type DatosModelo, type DatosInventario } from '@/funciones/funcionesInventario'
+import { guardarModelo, editarModelo, eliminarModelo, crearInventario, editarInventario, eliminarInventario, obtenerModelos, obtenerSedes, obtenerInventarioCompleto, type DatosModelo, type DatosInventario } from '@/funciones/funcionesInventario'
+import { getColeccion } from '@/services/firestore'
 import { ModalFormulario, type CampoFormulario } from '@/components/ModalFormulario'
 import * as serviceAuth from '@/services/auth'
 
@@ -15,6 +16,7 @@ export default function InventoryScreen() {
   const [modalInventarioVisible, setModalInventarioVisible] = useState(false)
   const [cargando, setCargando] = useState(false)
   const [inventario, setInventario] = useState<any[]>([])
+  const [modelos, setModelos] = useState<any[]>([])
 
   // Estado para saber si estamos editando (contiene el item a editar, null = crear nuevo)
   const [editandoModelo, setEditandoModelo] = useState<any | null>(null)
@@ -103,6 +105,7 @@ export default function InventoryScreen() {
       setModalModeloVisible(false)
       setEditandoModelo(null)
       limpiarFormularioModelo()
+      cargarModelos()
     } catch (e: any) {
       Alert.alert('Error', e.message)
     } finally {
@@ -147,6 +150,40 @@ export default function InventoryScreen() {
     }
   }
 
+  const handleEliminarModelo = async () => {
+    if (!editandoModelo) return
+    setCargando(true)
+    try {
+      await eliminarModelo(editandoModelo.id)
+      Alert.alert('Éxito', 'Modelo eliminado correctamente')
+      setModalModeloVisible(false)
+      setEditandoModelo(null)
+      limpiarFormularioModelo()
+      cargarModelos()
+    } catch (e: any) {
+      Alert.alert('Error', e.message)
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  const handleEliminarInventario = async () => {
+    if (!editandoInventario) return
+    setCargando(true)
+    try {
+      await eliminarInventario(editandoInventario.id)
+      Alert.alert('Éxito', 'Inventario eliminado correctamente')
+      setModalInventarioVisible(false)
+      setEditandoInventario(null)
+      limpiarFormularioInventario()
+      cargarInventario()
+    } catch (e: any) {
+      Alert.alert('Error', e.message)
+    } finally {
+      setCargando(false)
+    }
+  }
+
   const cargarInventario = async () => {
     try {
       const datos = await obtenerInventarioCompleto()
@@ -154,6 +191,16 @@ export default function InventoryScreen() {
       setInventario(datos)
     } catch (e) {
       console.error('Error al cargar inventario:', e)
+    }
+  }
+
+  const cargarModelos = async () => {
+    try {
+      const datos = await getColeccion('modelos')
+      console.log('modelos cargados', JSON.stringify(datos, null, 2))
+      setModelos(datos)
+    } catch (e) {
+      console.error('Error al cargar modelos:', e)
     }
   }
 
@@ -166,9 +213,10 @@ export default function InventoryScreen() {
     verificarRol()
   }, [])
 
-  // Cargar inventario al montar la pantalla
+  // Cargar inventario y modelos al montar la pantalla
   useEffect(() => {
     cargarInventario()
+    cargarModelos()
   }, [])
 
   // Cargar modelos y sedes cuando se abre el modal de inventario
@@ -180,11 +228,11 @@ export default function InventoryScreen() {
 
   const cargarOpciones = async () => {
     try {
-      const [modelos, sedes] = await Promise.all([
+      const [modelosOpts, sedes] = await Promise.all([
         obtenerModelos(),
         obtenerSedes(),
       ])
-      setModelosOptions(modelos)
+      setModelosOptions(modelosOpts)
       setSedesOptions(sedes)
     } catch (e) {
       console.error('Error al cargar opciones:', e)
@@ -267,6 +315,52 @@ export default function InventoryScreen() {
               }}
             />
           ))}
+
+          {/* Sección de Modelos Registrados */}
+          <View style={[screenStyles.encabezadoActividad, { marginTop: 16 }]}>
+            <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>Modelos Registrados</Text>
+          </View>
+
+          {modelos.map((modelo) => (
+            <Pressable
+              key={modelo.id}
+              style={{
+                backgroundColor: theme.surface,
+                borderRadius: 12,
+                padding: 16,
+                gap: 4,
+              }}
+              onPress={() => {
+                if (esAlmacenista) {
+                  abrirEditarModelo(modelo)
+                }
+              }}
+            >
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ flex: 1, gap: 4 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: theme.onSurface }}>
+                    {modelo.nombreIdentificador || 'Sin nombre'}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: theme.onSurfaceVariant }}>
+                    Código: {modelo.codigoModelo || 'Sin código'}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: theme.onSurfaceVariant }}>
+                    Marca: {modelo.marca || 'Sin marca'}
+                  </Text>
+                  {modelo.descripcion ? (
+                    <Text style={{ fontSize: 12, color: theme.onSurfaceVariant }}>
+                      {modelo.descripcion}
+                    </Text>
+                  ) : null}
+                  {modelo.tecnologias ? (
+                    <Text style={{ fontSize: 12, color: theme.onSurfaceVariant }}>
+                      Tecnologías: {modelo.tecnologias}
+                    </Text>
+                  ) : null}
+                </View>
+              </View>
+            </Pressable>
+          ))}
         </View>
       </ScrollView>
 
@@ -283,6 +377,8 @@ export default function InventoryScreen() {
           setEditandoModelo(null)
           limpiarFormularioModelo()
         }}
+        mostrarEliminar={!!editandoModelo}
+        onEliminar={handleEliminarModelo}
       />
 
       {/* Modal para crear/editar inventario */}
@@ -298,6 +394,8 @@ export default function InventoryScreen() {
           setEditandoInventario(null)
           limpiarFormularioInventario()
         }}
+        mostrarEliminar={!!editandoInventario}
+        onEliminar={handleEliminarInventario}
       />
     </View>
   )

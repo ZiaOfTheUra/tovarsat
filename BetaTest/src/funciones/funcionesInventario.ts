@@ -256,6 +256,62 @@ export async function obtenerModelos(): Promise<{ label: string; value: string }
   }))
 }
 
+/* 
+Eliminar Modelo: 
+    Entrada: Un ID de modelo.
+    Seguridad: Se verifica que el usuario sea user.rol==Almacenista. Se pide autenticación biométrica.
+    Proceso: Se elimina el documento del modelo en Firestore.
+    Salida: El documento eliminado de la colección de Modelos en el Firestore.
+*/
+export async function eliminarModelo(modeloId: string): Promise<void> {
+  const usuario = auth().currentUser
+  if (!usuario) throw Error("Usuario No Autenticado")
+
+  // Seguridad: verificar rol Almacenista
+  const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
+  if (!esAlmacenista) throw Error("Permisos insuficientes")
+
+  // Autenticación biométrica
+  const biometricAuth = await LocalAuthentication.authenticateAsync({
+    promptMessage: 'Autenticación biométrica requerida',
+  })
+  if (!biometricAuth.success) {
+    throw Error("Autenticación biométrica fallida")
+  }
+
+  await firestore().collection('modelos').doc(modeloId).delete()
+
+  console.log("Modelo eliminado correctamente")
+}
+
+/* 
+Eliminar Inventario: 
+    Entrada: Un ID de inventario.
+    Seguridad: Se verifica que el usuario sea user.rol==Almacenista. Se pide autenticación biométrica.
+    Proceso: Se elimina el documento del inventario en Firestore.
+    Salida: El documento eliminado de la colección de Inventario en el Firestore.
+*/
+export async function eliminarInventario(inventarioId: string): Promise<void> {
+  const usuario = auth().currentUser
+  if (!usuario) throw Error("Usuario No Autenticado")
+
+  // Seguridad: verificar rol Almacenista
+  const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
+  if (!esAlmacenista) throw Error("Permisos insuficientes")
+
+  // Autenticación biométrica
+  const biometricAuth = await LocalAuthentication.authenticateAsync({
+    promptMessage: 'Autenticación biométrica requerida',
+  })
+  if (!biometricAuth.success) {
+    throw Error("Autenticación biométrica fallida")
+  }
+
+  await firestore().collection('inventario').doc(inventarioId).delete()
+
+  console.log("Inventario eliminado correctamente")
+}
+
 export async function obtenerSedes(): Promise<{ label: string; value: string }[]> {
   const snapshot = await firestore().collection('sedes').get()
   return snapshot.docs.map((doc) => ({

@@ -74,8 +74,8 @@ Exportar Usuarios:
     Proceso: Dependiendo del tipo de exportación, se hace un sort por nombre o por rol.
     Salida: un archivo tipo .xls
 
-Exportar Movimientos:
-    Entrada: Toda la colección de movimientosInventario.
+Exportar Envios:
+    Entrada: Toda la colección de enviosInventario.
     Seguridad: Se verifica que el usuario sea user.rol==GerenciaLocal o el Service User. Se pide autenticación biométrica. 
     Proceso: Dependiendo del tipo de exportación, se hace un sort por modelos, por cantidad, por sede, o se filtra por sede.
     Salida: un archivo tipo .xls

@@ -12,6 +12,7 @@ export type CampoFormulario = {
   numberOfLines?: number
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters'
   opciones?: { label: string; value: string }[]
+  soloLectura?: boolean
 }
 
 type ModalFormularioProps = {
@@ -23,6 +24,9 @@ type ModalFormularioProps = {
   textoBotonCancelar?: string
   onConfirm: () => void | Promise<void>
   onCancel: () => void
+  mostrarEliminar?: boolean
+  onEliminar?: () => void | Promise<void>
+  textoBotonEliminar?: string
 }
 
 export function ModalFormulario({
@@ -34,9 +38,31 @@ export function ModalFormulario({
   textoBotonCancelar = 'Cancelar',
   onConfirm,
   onCancel,
+  mostrarEliminar = false,
+  onEliminar,
+  textoBotonEliminar = 'Eliminar',
 }: ModalFormularioProps) {
   const theme = useTheme()
   const [selectorAbierto, setSelectorAbierto] = useState<number | null>(null)
+
+  const handleEliminar = () => {
+    Alert.alert(
+      'Confirmar eliminación',
+      '¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: () => {
+            if (onEliminar) {
+              onEliminar()
+            }
+          },
+        },
+      ]
+    )
+  }
 
   return (
     <Modal
@@ -64,18 +90,18 @@ export function ModalFormulario({
                     paddingVertical: 10,
                     borderWidth: 1,
                     borderRadius: 12,
-                    backgroundColor: theme.surfaceContainerLowest,
-                    borderColor: theme.outline,
+                    backgroundColor: campo.soloLectura ? theme.surfaceContainerHigh : theme.surfaceContainerLowest,
+                    borderColor: campo.soloLectura ? theme.surfaceContainerHigh : theme.outline,
                     justifyContent: 'center',
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}
-                  onPress={() => setSelectorAbierto(index)}
+                  onPress={campo.soloLectura ? undefined : () => setSelectorAbierto(index)}
                 >
-                  <Text style={{ color: theme.onSurface, flex: 1 }}>
+                  <Text style={{ color: campo.soloLectura ? theme.onSurfaceVariant : theme.onSurface, flex: 1 }}>
                     {campo.opciones.find((o) => o.value === campo.value)?.label || campo.placeholder || 'Seleccionar...'}
                   </Text>
-                  <Text style={{ color: theme.onSurfaceVariant, fontSize: 20 }}>▼</Text>
+                  {!campo.soloLectura && <Text style={{ color: theme.onSurfaceVariant, fontSize: 20 }}>▼</Text>}
                 </Pressable>
               ) : (
                 <TextInput
@@ -83,15 +109,15 @@ export function ModalFormulario({
                     campo.multiline
                       ? {
                           ...screenStyles.inputModalMultiline,
-                          backgroundColor: theme.surfaceContainerLowest,
-                          borderColor: theme.outline,
-                          color: theme.onSurface,
+                          backgroundColor: campo.soloLectura ? theme.surfaceContainerHigh : theme.surfaceContainerLowest,
+                          borderColor: campo.soloLectura ? theme.surfaceContainerHigh : theme.outline,
+                          color: campo.soloLectura ? theme.onSurfaceVariant : theme.onSurface,
                         }
                       : {
                           ...screenStyles.inputModal,
-                          backgroundColor: theme.surfaceContainerLowest,
-                          borderColor: theme.outline,
-                          color: theme.onSurface,
+                          backgroundColor: campo.soloLectura ? theme.surfaceContainerHigh : theme.surfaceContainerLowest,
+                          borderColor: campo.soloLectura ? theme.surfaceContainerHigh : theme.outline,
+                          color: campo.soloLectura ? theme.onSurfaceVariant : theme.onSurface,
                         }
                   }
                   value={campo.value}
@@ -101,6 +127,7 @@ export function ModalFormulario({
                   multiline={campo.multiline}
                   numberOfLines={campo.numberOfLines}
                   autoCapitalize={campo.autoCapitalize || 'none'}
+                  editable={!campo.soloLectura}
                 />
               )}
             </View>
@@ -134,6 +161,28 @@ export function ModalFormulario({
               </Text>
             </Pressable>
           </View>
+
+          {mostrarEliminar && onEliminar && (
+            <Pressable
+              style={({ pressed }) => [
+                {
+                  marginTop: 12,
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                  borderRadius: 12,
+                  backgroundColor: theme.error,
+                  opacity: cargando ? 0.9 : pressed ? 0.8 : 1,
+                  alignItems: 'center',
+                },
+              ]}
+              onPress={handleEliminar}
+              disabled={cargando}
+            >
+              <Text style={[screenStyles.textoBotonEnviar, { color: theme.onError }]}>
+                {textoBotonEliminar}
+              </Text>
+            </Pressable>
+          )}
         </View>
       </View>
 
