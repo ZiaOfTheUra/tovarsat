@@ -130,17 +130,17 @@ export default function DashboardScreen() {
               fullWidth
               color="primary"
             />
-            {esGerencia && (
-              <View style={screenStyles.accionesRapidas}>
+            <View style={screenStyles.accionesRapidas}>
                 <Pressable
                   style={[screenStyles.botonAccion, { backgroundColor: theme.primary }]}
                   onPress={() => handleExportar('asistencias', exportarAsistencias)}
                   disabled={!!cargando}
                 >
                   <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
-                    {cargando === 'asistencias' ? 'Exportando...' : 'Exportar Asistencias'}
+                    {cargando === 'asistencias' ? 'Exportando...' : 'Exportar Asistencia'}
                   </Text>
                 </Pressable>
+                {esGerencia && (
                 <Pressable
                   style={[screenStyles.botonAccion, { backgroundColor: theme.secondary }]}
                   onPress={() => handleExportar('usuarios', exportarUsuarios)}
@@ -150,8 +150,8 @@ export default function DashboardScreen() {
                     {cargando === 'usuarios' ? 'Exportando...' : 'Exportar Usuarios'}
                   </Text>
                 </Pressable>
+                )}
               </View>
-            )}
           </View>
 
           {/* Envios por aprobar + exportacion relevante */}

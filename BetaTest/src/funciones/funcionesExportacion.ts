@@ -319,10 +319,10 @@ export async function exportarUsuarios(): Promise<void> {
 
 /*
 Exportar Asistencias:
-    Entrada: Ninguna, toma todas las asistencias de Firestore.
-    Seguridad: Se verifica que el usuario sea user.rol==gerenciaLocal.
-    Proceso: Obtiene asistencias, une nombres de usuario, ordena por fechaEntrada, y exporta a Excel.
-    Salida: Un archivo .xlsx con todas las asistencias.
+    Entrada: Ninguna, toma las asistencias segun el rol (todo el historico, sin limite de fechas).
+    Seguridad: GerenciaLocal exporta las de toda su sede; cualquier otro rol exporta solo las propias.
+    Proceso: Obtiene asistencias, une nombres de usuario, ordena por fecha, y exporta a Excel.
+    Salida: Un archivo .xlsx con las asistencias.
 */
 export async function exportarAsistencias(): Promise<void> {
   const usuario = auth().currentUser
@@ -330,40 +330,91 @@ export async function exportarAsistencias(): Promise<void> {
 
   console.log('[exportarasistencias] usuario uid:', usuario.uid)
 
-  // Seguridad: verificar rol GerenciaLocal
-  const esGerencia = await serviceAuth.verificarRolUsuario('gerenciaLocal')
-  console.log('[exportarasistencias] rol gerencia:', esGerencia)
-  if (!esGerencia) throw Error("Permisos insuficientes")
+  // tomamos los datos del usuario para saber su rol y sede
+  const usuarioDoc = await firestore()
+    .collection('usuarios')
+    .doc(usuario.uid)
+    .get()
+  const datosUsuario = usuarioDoc.data()
+  const rol = datosUsuario?.rol
+  const sedeRequest = datosUsuario?.sede
 
-  const asistencias = await getColeccion('asistencias')
-  const usuarios = await getColeccion('usuarios')
+  console.log('[exportarasistencias] rol:', rol)
+
+  // Para el gerente se exportan las asistencias de toda su sede; para los demas solo las propias.
+  // mapa de uid -> datos del usuario para resolver nombre y email de cada fila
+  let asistencias: any[] = []
+  let mapaUsuarios: Record<string, any> = {}
+
+  if (rol == "gerenciaLocal"){
+    // buscando todos los usuarios de la sede del gerente
+    const snapshot1 = await firestore()
+      .collection('usuarios')
+      .where('sede', '==', sedeRequest)
+      .get()
+    const listaFiltrada = snapshot1.docs.map(doc => doc.id)
+    snapshot1.docs.forEach(doc => {
+      mapaUsuarios[doc.id] = doc.data()
+    })
+    // firestore solo admite un max de 10 uids por query 'in', asi que partimos
+    // la lista en grupos de 10 y juntamos todos los resultados
+    for (let i = 0; i < listaFiltrada.length; i += 10) {
+      const grupo = listaFiltrada.slice(i, i + 10)
+      const snap = await firestore()
+        .collection('asistencias')
+        .where('uid', 'in', grupo)
+        .get()
+      asistencias.push(...snap.docs.map(doc => doc.data()))
+    }
+  } else {
+    // de otra forma solo las del propio usuario
+    mapaUsuarios[usuario.uid] = datosUsuario
+    const snap = await firestore()
+      .collection('asistencias')
+      .where('uid', '==', usuario.uid)
+      .get()
+    asistencias = snap.docs.map(doc => doc.data())
+  }
 
   console.log('[exportarasistencias] asistencias crudo:', JSON.stringify(asistencias, null, 2))
-  console.log('[exportarasistencias] usuarios crudo:', JSON.stringify(usuarios, null, 2))
 
   const datos = asistencias.map((a: any) => {
-    const usuarioA = usuarios.find((u: any) => u.id === a.usuarioId)
+    const usuarioA = mapaUsuarios[a.uid]
+    // en la exportacion mostramos la salida real si el usuario ya la marco, si no la prevista
+    const fechaSalidaFinal = a.fechaSalidaReal
+      ? a.fechaSalidaReal.toDate()
+      : a.fechaSalida.toDate()
     return {
-      nombre: usuarioA ? usuarioA.nombre : 'Sin usuario',
-      email: usuarioA ? usuarioA.email : 'Sin email',
-      fechaEntrada: a.fechaEntrada || '',
-      fechaSalida: a.fechaSalida || '',
+      nombre: usuarioA ? (usuarioA.nombre || 'Sin usuario') : 'Sin usuario',
+      email: usuarioA ? (usuarioA.email || 'Sin email') : 'Sin email',
+      turno: a.turno === 'manana' ? 'Mañana' : 'Tarde',
+      fecha: a.fechaEntrada.toDate().toLocaleDateString(),
+      horaEntrada: a.fechaEntrada.toDate().getHours().toString().padStart(2, '0') + ":" +
+        a.fechaEntrada.toDate().getMinutes().toString().padStart(2, '0'),
+      horaSalida: fechaSalidaFinal.getHours().toString().padStart(2, '0') + ":" +
+        fechaSalidaFinal.getMinutes().toString().padStart(2, '0'),
+      tipoSalida: a.tipoSalida === 'manual' ? 'Manual' : 'Automática',
       horas: a.horas || '',
+      tiempoIncompleto: a.tiempoIncompleto ? 'Si' : 'No',
       metodoMarcaje: a.metodoMarcaje || '',
     }
   })
 
   // Ordenar por fecha de entrada (usar String por si fechaEntrada es un Timestamp)
-  datos.sort((a: any, b: any) => String(a.fechaEntrada).localeCompare(String(b.fechaEntrada)))
+  datos.sort((a: any, b: any) => String(a.fecha).localeCompare(String(b.fecha)))
 
   console.log('[exportarasistencias] datos procesados:', JSON.stringify(datos, null, 2))
 
   const columnas: ColumnaExportacion[] = [
     { header: 'Nombre', key: 'nombre' },
     { header: 'Email', key: 'email' },
-    { header: 'Fecha Entrada', key: 'fechaEntrada' },
-    { header: 'Fecha Salida', key: 'fechaSalida' },
+    { header: 'Turno', key: 'turno' },
+    { header: 'Fecha', key: 'fecha' },
+    { header: 'Hora Entrada', key: 'horaEntrada' },
+    { header: 'Hora Salida', key: 'horaSalida' },
+    { header: 'Tipo Salida', key: 'tipoSalida' },
     { header: 'Horas', key: 'horas' },
+    { header: 'Tiempo Incompleto', key: 'tiempoIncompleto' },
     { header: 'Metodo Marcaje', key: 'metodoMarcaje' },
   ]
 

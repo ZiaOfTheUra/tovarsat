@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { View, Text, TextInput, Pressable, Modal, Alert, FlatList } from 'react-native'
 import { useTheme } from '@/theme/useTheme'
 import { screenStyles, estilosModal } from '@/theme/screenStyles'
@@ -27,6 +27,7 @@ type ModalFormularioProps = {
   mostrarEliminar?: boolean
   onEliminar?: () => void | Promise<void>
   textoBotonEliminar?: string
+  children?: React.ReactNode
 }
 
 export function ModalFormulario({
@@ -41,6 +42,7 @@ export function ModalFormulario({
   mostrarEliminar = false,
   onEliminar,
   textoBotonEliminar = 'Eliminar',
+  children,
 }: ModalFormularioProps) {
   const theme = useTheme()
   const [selectorAbierto, setSelectorAbierto] = useState<number | null>(null)
@@ -132,6 +134,8 @@ export function ModalFormulario({
               )}
             </View>
           ))}
+
+          {children}
 
           <View style={estilosModal.filaBotones}>
             <Pressable

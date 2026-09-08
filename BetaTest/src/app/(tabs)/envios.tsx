@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ScrollView, View, Text, Pressable, Alert } from 'react-native'
+import { ScrollView, View, Text, Pressable, Alert, Keyboard } from 'react-native'
 import { useTheme } from '@/theme/useTheme'
 import { screenStyles } from '@/theme/screenStyles'
 import { BarraSuperior } from '@/components/BarraSuperior'
@@ -7,6 +7,7 @@ import { TarjetaInventario } from '@/components/TarjetaInventario'
 import { MaterialIcons } from '@expo/vector-icons'
 import { ModalFormulario, type CampoFormulario } from '@/components/ModalFormulario'
 import { crearMovimientoInventario, editarMovimientoDatos, editarMovimientoAprobacion, obtenerMovimientos } from '@/funciones/funcionesEnvios'
+import { verificarBiometrica } from '@/funciones/funcionesAsistencia'
 import { obtenerSedes, obtenerInventarioCompleto } from '@/funciones/funcionesInventario'
 import * as serviceAuth from '@/services/auth'
 
@@ -47,7 +48,7 @@ export default function EnviosScreen() {
     setModalCrearVisible(true)
   }
 
-  // ─── Abrir modal para editar movimiento (Gerencia Local) ──
+  // ─── Abrir modal para editar movimiento (Almacenista) ─────
   const abrirEditarMovimiento = (item: any) => {
     setEditandoMovimiento(item)
     setInventarioMovimiento(item.inventarioId || '')
@@ -56,7 +57,7 @@ export default function EnviosScreen() {
     setModalCrearVisible(true)
   }
 
-  // ─── Abrir modal para aprobar/rechazar (Almacenista) ──────
+  // ─── Abrir modal para aprobar/rechazar (Gerencia Local) ───
   const abrirAprobacionMovimiento = (item: any) => {
     setAprobandoMovimiento(item)
     setModalAprobacionVisible(true)
@@ -64,9 +65,9 @@ export default function EnviosScreen() {
 
   // ─── Manejar click en tarjeta segun rol ───────────────────
   const manejarPresionTarjeta = (item: any) => {
-    if (esAlmacenista) {
+    if (esGerenciaLocal) {
       abrirAprobacionMovimiento(item)
-    } else if (esGerenciaLocal) {
+    } else if (esAlmacenista) {
       abrirEditarMovimiento(item)
     }
   }
@@ -81,6 +82,14 @@ export default function EnviosScreen() {
 
     setCargando(true)
     try {
+      // Cerrar el modal y ocultar el teclado antes de pedir la huella, para que
+      // el prompt biometrico no compita por el foco con el modal ni el teclado
+      setModalCrearVisible(false)
+      Keyboard.dismiss()
+
+      // Verificar biometría primero (como en asistencia)
+      await verificarBiometrica()
+
       if (editandoMovimiento) {
         // Modo edición
         await editarMovimientoDatos(editandoMovimiento.id, {
@@ -124,12 +133,22 @@ export default function EnviosScreen() {
   const handleAprobarMovimiento = async (aprobado: boolean) => {
     if (!aprobandoMovimiento) return
 
+    // guardamos el id antes de cerrar el modal porque ya no usaremos el estado
+    const movimientoId = aprobandoMovimiento.id
+
     setCargando(true)
     try {
-      await editarMovimientoAprobacion(aprobandoMovimiento.id, aprobado)
-      Alert.alert('Éxito', aprobado ? 'Movimiento aprobado' : 'Movimiento rechazado')
+      // Cerrar el modal y ocultar el teclado antes de pedir la huella, para que
+      // el prompt biometrico no compita por el foco con el modal ni el teclado
       setModalAprobacionVisible(false)
       setAprobandoMovimiento(null)
+      Keyboard.dismiss()
+
+      // Verificar biometría primero (como en asistencia)
+      await verificarBiometrica()
+
+      await editarMovimientoAprobacion(movimientoId, aprobado)
+      Alert.alert('Éxito', aprobado ? 'Movimiento aprobado' : 'Movimiento rechazado')
       cargarMovimientos()
     } catch (e: any) {
       Alert.alert('Error', e.message)
@@ -206,23 +225,22 @@ export default function EnviosScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ gap: 12 }}>
-          <View style={screenStyles.encabezadoActividad}>
-            <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>Envíos</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>Envíos</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            {esAlmacenista && (
+              <Pressable
+                style={[screenStyles.botonAccion, { backgroundColor: theme.primary }]}
+                onPress={abrirCrearMovimiento}
+              >
+                <MaterialIcons name="add-circle-outline" size={20} color={theme.onPrimary} />
+                <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
+                  Nuevo Envío
+                </Text>
+              </Pressable>
+            )}
           </View>
-
-          {esGerenciaLocal && (
-          <View style={screenStyles.accionesRapidas}>
-            <Pressable
-              style={[screenStyles.botonAccion, { backgroundColor: theme.primary }]}
-              onPress={abrirCrearMovimiento}
-            >
-              <MaterialIcons name="add-circle-outline" size={20} color={theme.onPrimary} />
-              <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
-                Nuevo Envío
-              </Text>
-            </Pressable>
-          </View>
-          )}
+        </View>
 
           {movimientos.map((item) => (
             <TarjetaInventario
@@ -239,7 +257,7 @@ export default function EnviosScreen() {
         </View>
       </ScrollView>
 
-      {/* Modal para crear/editar movimiento (Gerencia Local) */}
+      {/* Modal para crear/editar movimiento (Almacenista) */}
       <ModalFormulario
         visible={modalCrearVisible}
         titulo={editandoMovimiento ? 'Editar Envío' : 'Nuevo Envío'}
@@ -254,7 +272,7 @@ export default function EnviosScreen() {
         }}
       />
 
-      {/* Modal para aprobar/rechazar movimiento (Almacenista) */}
+      {/* Modal para aprobar/rechazar movimiento (Gerencia Local) */}
       <ModalFormulario
         visible={modalAprobacionVisible}
         titulo="Aprobar Envío"
@@ -267,9 +285,16 @@ export default function EnviosScreen() {
         ]}
         cargando={cargando}
         textoBotonConfirmar="Aprobar"
-        textoBotonCancelar="Denegar"
+        textoBotonCancelar="Cerrar"
         onConfirm={() => handleAprobarMovimiento(true)}
-        onCancel={() => handleAprobarMovimiento(false)}
+        onCancel={() => {
+          // cerrar el modal sin denegar: el boton atras/cerrar no debe disparar la huella
+          setModalAprobacionVisible(false)
+          setAprobandoMovimiento(null)
+        }}
+        mostrarEliminar
+        textoBotonEliminar="Denegar"
+        onEliminar={() => handleAprobarMovimiento(false)}
       />
     </View>
   )

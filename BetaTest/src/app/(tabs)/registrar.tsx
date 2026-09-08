@@ -127,7 +127,6 @@ export default function RegistrarScreen() {
         <View style={{ gap: 12 }}>
           <View style={screenStyles.encabezadoActividad}>
             <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>Registro de Usuarios</Text>
-            <Text style={[screenStyles.subtitulo, { color: theme.onSurfaceVariant }]}>Gestiona los usuarios del sistema.</Text>
           </View>
 
           {esGerencia && (

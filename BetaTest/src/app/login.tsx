@@ -232,23 +232,7 @@ export default function LoginScreen() {
         </View>
 
         {/* Pie de página */}
-        <View style={screenStyles.pieLogin}>
-          <Pressable onPress={() => {}}>
-            <Text style={[screenStyles.enlacePie, { color: theme.outlineVariant }]}>
-              Política de Privacidad
-            </Text>
-          </Pressable>
-          <Pressable onPress={() => {}}>
-            <Text style={[screenStyles.enlacePie, { color: theme.outlineVariant }]}>
-              Términos del Servicio
-            </Text>
-          </Pressable>
-          <Pressable onPress={() => {}}>
-            <Text style={[screenStyles.enlacePie, { color: theme.outlineVariant }]}>
-              Contacto
-            </Text>
-          </Pressable>
-        </View>
+
       </View>
     </ScrollView>
   )

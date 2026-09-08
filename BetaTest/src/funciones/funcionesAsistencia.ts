@@ -8,10 +8,12 @@ import * as LocalAuthentication from 'expo-local-authentication'
 
 // crearAsistencia(horaEntrada)
 // - Obtener UID del usuario autenticado
-// - Verificar que no existe asistencia previa hoy
-// - Asignar hora salida segun turno (11:50am o 5:00pm)
+// - Verificar que la entrada este dentro de la ventana laboral (8:00 - 17:00)
+// - Asignar el turno segun la hora de entrada (corte a las 11:50)
+// - Verificar que no existe asistencia del mismo turno hoy (max 2 por dia, uno por turno)
+// - Asignar hora salida prevista: entrada + 5 horas, con tope a las 17:00
 // - Calcular horas trabajadas
-// - verificar entrada tardia (menos de 3 horas trabajadas)
+// - verificar tiempo incompleto (menos de 3 horas trabajadas)
 // - Guardar documento en 'asistencias'
 
 export async function crearAsistencia(horaEntrada: Date): Promise<void> {
@@ -22,63 +24,133 @@ export async function crearAsistencia(horaEntrada: Date): Promise<void> {
   const hoy = new Date().toISOString().split('T')[0]
   //odio hacer regexes con toda mi alma, honestamente el hecho de que esto funciona me jode
 
+  // - Verificar que la entrada este dentro de la ventana laboral (8:00 - 17:00)
+  // horario de la sede, tomamos la hora con minutos en decimal para comparar con limpias
+  const hora = horaEntrada.getHours()
+  const minutos = horaEntrada.getMinutes()
+  const horaDecimal = hora + minutos / 60
+  if (horaDecimal < 8 || horaDecimal >= 17) throw new Error("Fuera de horario laboral (8:00 - 17:00)")
 
-  // - Verificar que no existe asistencia previa hoy
+  // - Asignar el turno segun la hora de entrada. El corte es a las 11:50 como ya existia,
+  // 11:50 en decimal es 11 + 50/60, si la entrada es antes => turno manana, si no => tarde
+  const corteManana = 11 + 50 / 60
+  const turno = horaDecimal < corteManana ? 'manana' : 'tarde'
+  console.log(turno)
+
+  // - Verificar que no existe asistencia del mismo turno hoy
+  // honestamente la forma mas legible es haciendo esto, se agarra el snapshot de las asistencias
+  // del usuario para luego hacer el formato de los docs con el isostring para verificar que no
+  // haya asistencias del dia y del turno. Se necesita el toIsoString porque firestore guarda
+  // los documentos como UTC y new Date guarda el timestamp en horario local. Split T divide el
+  // timestamp un timestam utc se ve como: 2024-07-06T01:48:00.000Z, y al partirlo en T lo divide
+  // en dos como ["2024-07-06", "01:48:00.000Z"], [0] nos permite tomar la primera mitad y comparar
+  // con el documento
   const snapshot = await firestore()
     .collection('asistencias')
     .where('uid', '==', usuario.uid)
     .get()
-  // honestamente la forma mas legible es haciendo esto, se agarra el snapshot de las asistencias
-  // del usuario para luego hacer el formato de los docs con el isostring para verificar que no
-  // haya asistencias del dia. Se necesita el toIsoString porque firestore guarda los documentos 
-  // como UTC y new Date guarda el timestamp en horario local. Split T divide el timestamp
-  // un timestam utc se ve como: 2024-07-06T01:48:00.000Z, y al partirlo en T lo divide en dos
-  // como ["2024-07-06", "01:48:00.000Z"], [0] nos permite tomar la primera mitad y comparar con el documento
-    
+
   console.log(snapshot)
   const hoyISO = new Date().toISOString().split('T')[0]
-  const existeHoy = snapshot.docs.some(doc => {
+  const existeTurnoHoy = snapshot.docs.some(doc => {
     const fechaDoc = doc.data().fechaEntrada.toDate()
-    console.log(fechaDoc, fechaDoc.toISOString().split('T')[0] === hoyISO)
-    return fechaDoc.toISOString().split('T')[0] === hoyISO
+    console.log(fechaDoc, fechaDoc.toISOString().split('T')[0] === hoyISO && doc.data().turno === turno)
+    return fechaDoc.toISOString().split('T')[0] === hoyISO && doc.data().turno === turno
   })
 
-  if (existeHoy) throw new Error("Asistencia Previa Hoy")
+  if (existeTurnoHoy) throw new Error("Asistencia ya registrada para este turno hoy")
   
-  //  Asignar hora salida segun turno (11:50am o 5:00pm)
-  const hora = horaEntrada.getHours()
-  console.log(hora)
-  let horaSalida = new Date()
-  if (hora < 12){ 
-    horaSalida.setHours(11,50, 0 ,0)
-  } else {
-    horaSalida.setHours(17, 0, 0 , 0)
-  }
+  // - Asignar hora salida prevista: la entrada mas 5 horas, con tope a las 17:00 del mismo dia.
+  // copia de la hora de entrada para no mutar el parametro original
+  const horaSalida = new Date(horaEntrada.getTime())
+  horaSalida.setHours(horaSalida.getHours() + 5)
+  const topeSalida = new Date(horaEntrada.getTime())
+  topeSalida.setHours(17, 0, 0, 0)
+  if (horaSalida > topeSalida) horaSalida.setTime(topeSalida.getTime())
+
   // - Calcular horas trabajadas
   const horasTrabajadas = ((horaSalida.getTime() - horaEntrada.getTime()) / (1000 * 60 * 60))
-  // - verificar entrada tardia (menos de 3 horas trabajadas)
+  // - verificar tiempo incompleto (menos de 3 horas trabajadas)
   console.log(horasTrabajadas)
-  const entradaTardia = horasTrabajadas < 3
+  const tiempoIncompleto = horasTrabajadas < 3
 
   // - Guardar documento en 'asistencias'
   console.log({    uid: usuario.uid,
+    turno: turno,
     fechaEntrada: horaEntrada,
     fechaSalida: horaSalida,
+    fechaSalidaReal: null,
+    tipoSalida: 'automatica',
     horas: horasTrabajadas,
-    entradaTardia: entradaTardia,
-    metodoMarcaje: 'biometria'})
+    tiempoIncompleto: tiempoIncompleto,
+    diasExonerado: false,
+    metodoMarcaje: 'biometria',
+    creadoEn: firestore.Timestamp.now()})
   await firestore()
   .collection('asistencias')
   .add({
     uid: usuario.uid,
+    turno: turno,
     fechaEntrada: horaEntrada,
     fechaSalida: horaSalida,
+    fechaSalidaReal: null,
+    tipoSalida: 'automatica',
     horas: horasTrabajadas,
-    entradaTardia: entradaTardia,
-    metodoMarcaje: 'biometria'
+    tiempoIncompleto: tiempoIncompleto,
+    diasExonerado: false,
+    metodoMarcaje: 'biometria',
+    creadoEn: firestore.Timestamp.now()
   })
 }
 
+// marcarSalida()
+// - Obtener UID del usuario autenticado
+// - Buscar la asistencia del turno abierto de hoy (tipoSalida 'automatica')
+// - Recalcular horas y tiempoIncompleto con la hora real de salida
+// - Cerrar el turno (tipoSalida 'manual' y fechaSalidaReal)
+export async function marcarSalida(): Promise<void> {
+  // - Obtener UID del usuario autenticado
+  const usuario = auth().currentUser
+  if (!usuario) throw Error("Usuario No Autenticado")
+
+  // - Verificar que haya un turno abierto hoy (tipoSalida 'automatica')
+  // nada mas puede haber un turno abierto a la vez, ya que crearAsistencia solo crea si no
+  // existe otro del mismo turno y esperar a marcar salida para abrir el siguiente
+  const snapshot = await firestore()
+    .collection('asistencias')
+    .where('uid', '==', usuario.uid)
+    .get()
+
+  const hoyISO = new Date().toISOString().split('T')[0]
+  const turnoAbierto = snapshot.docs.find(doc => {
+    const fechaDoc = doc.data().fechaEntrada.toDate()
+    return fechaDoc.toISOString().split('T')[0] === hoyISO && doc.data().tipoSalida === 'automatica'
+  })
+
+  if (!turnoAbierto) throw new Error("No hay turno abierto hoy para marcar salida")
+
+  // - Calcular horas trabajadas con la hora real de salida marcada
+  const data = turnoAbierto.data()
+  const fechaSalidaReal = new Date()
+  const horasTrabajadas = ((fechaSalidaReal.getTime() - data.fechaEntrada.toDate().getTime()) / (1000 * 60 * 60))
+  const tiempoIncompleto = horasTrabajadas < 3
+
+  console.log('marcando salida', {
+    fechaSalidaReal: fechaSalidaReal,
+    horas: horasTrabajadas,
+    tiempoIncompleto: tiempoIncompleto})
+
+  // - Cerrar el turno, se mantiene fechaSalida prevista como referencia del turno teorico
+  await firestore()
+  .collection('asistencias')
+  .doc(turnoAbierto.id)
+  .update({
+    fechaSalidaReal: fechaSalidaReal,
+    tipoSalida: 'manual',
+    horas: horasTrabajadas,
+    tiempoIncompleto: tiempoIncompleto,
+  })
+}
 // verificarBiometrica()
 // - Usar expo-local-authentication
 // - Llamar authenticateAsync()
@@ -128,26 +200,37 @@ export async function verAsistencias(): Promise<AsistenciaLista[]> {
   const rol = datosUsuario?.rol 
   const sedeRequest = datosUsuario?.sede
 
-  let listaFiltrada: string[] = []
-
   let asistenciasSnapshot
+  // mapa de uid -> nombre para poner el nombre real de cada usuario en cada fila
+  let mapaNombres: Record<string, string> = {}
+
   if (rol == "gerenciaLocal"){
     // buscando los usuarios
     const snapshot1 = await firestore()
     .collection('usuarios')
     .where('sede', '==', sedeRequest)
     .get()
-    // llenamos la lista de uids
-    listaFiltrada = snapshot1.docs.map(doc => doc.id)
-    // comparamos. hay un ligero problema, esto solo admite un máx de 10 en la listaFiltrada
-    // whatever, lo arreglamos despues
-    asistenciasSnapshot = await firestore()
-    .collection('asistencias')
-    .where('uid', 'in', listaFiltrada)
-    .get()
+    // llenamos la lista de uids y el mapa de nombres
+    const listaFiltrada = snapshot1.docs.map(doc => doc.id)
+    snapshot1.docs.forEach(doc => {
+      mapaNombres[doc.id] = doc.data().nombre || ''
+    })
+    // comparamos. firestore solo admite un max de 10 uids por query 'in', asi que partimos
+    // la lista en grupos de 10 y juntamos todos los resultados
+    const asistenciasDocs: any[] = []
+    for (let i = 0; i < listaFiltrada.length; i += 10) {
+      const grupo = listaFiltrada.slice(i, i + 10)
+      const snap = await firestore()
+      .collection('asistencias')
+      .where('uid', 'in', grupo)
+      .get()
+      asistenciasDocs.push(...snap.docs)
+    }
+    asistenciasSnapshot = { docs: asistenciasDocs }
 
   } else {
     //de otra forma literalmente no necesitamos nada, solamente el uid del usuario
+    mapaNombres[usuario.uid] = datosUsuario?.nombre || ''
     asistenciasSnapshot = await firestore()
     .collection('asistencias')
     .where('uid', '==', uid)
@@ -160,33 +243,32 @@ export async function verAsistencias(): Promise<AsistenciaLista[]> {
   // con las entradas y salidas en UTC en el firestore. no solo eso, sino que
   // timestamp es un poco ilegible.
 
-  function formatFechaHora(fecha: Date): string {
-    return fecha.toLocaleTimeString([], { 
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    })
+  // pequeña utilidad para formatear la hora con doble digito, reutilizada para entrada,
+  // salida prevista y salida real. porque por defecto el getMinutes y getHours regresa
+  // las 5 de la mañana con 5 minutos como las 5:5. no como las 05:05. Y se ve horrible pa.
+  function formatHora(fecha: Date): string {
+    return fecha.getHours().toString().padStart(2, '0') + ":" + 
+      fecha.getMinutes().toString().padStart(2, '0')
   }
 
   // Formatear fechas con localización nativa
 
   return asistenciasSnapshot.docs.map(doc=>{
     const data = doc.data()
+    // en la vista mostramos la salida real si el usuario ya la marco, si no la prevista
+    const fechaSalidaFinal = data.fechaSalidaReal
+      ? data.fechaSalidaReal.toDate()
+      : data.fechaSalida.toDate()
     return {
       id: doc.id,
-      nombre: datosUsuario?.nombre || '',
+      // usamos el mapa de nombres para el nombre real del usuario de cada fila
+      nombre: mapaNombres[data.uid] || '',
       usuarioID: data.uid,
-      // porque asi? porque me da paja implementar una funcion que lo mas seguro nada mas use acá. 
-      // si despues resulta ser de que no, bueno.
-      // como funciona? tomamos el dato de la coleccion data. lo convertimos a date,
-      // sacamos las horas, lo convertimos a string, y luego hacemos un poquito de alteracion de string
-      // porque por defecto el getMinutes y getHours regresa las 5 de la mañana con 5 minutos como las 
-      // 5:5. no como las 05:05. Y se ve horrible pa.
-      fechaEntrada: data.fechaEntrada.toDate().getHours().toString().padStart(2, '0') + ":" + 
-      data.fechaEntrada.toDate().getMinutes().toString().padStart(2, '0'),
-      fechaSalida: data.fechaSalida.toDate().getHours().toString().padStart(2, '0') + ":" + 
-      data.fechaSalida.toDate().getMinutes().toString().padStart(2, '0'),
-      horasTrabajadas: data.horas}
+      turno: data.turno || '',
+      fechaEntrada: formatHora(data.fechaEntrada.toDate()),
+      fechaSalida: formatHora(fechaSalidaFinal),
+      tipoSalida: data.tipoSalida || 'automatica',
+      horasTrabajadas: data.horas || 0}
     }
   )
 }
@@ -197,7 +279,9 @@ export interface AsistenciaLista {
   id: string
   nombre: string
   usuarioID: string
+  turno: string
   fechaEntrada: string
   fechaSalida: string
+  tipoSalida: string
   horasTrabajadas: number
 }

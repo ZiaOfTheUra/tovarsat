@@ -1,7 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth';
 import * as serviceAuth from '@/services/auth'
-import * as LocalAuthentication from 'expo-local-authentication'
 import { getColeccion, getDocumento } from '@/services/firestore'
 
 // ─── TIPOS ──────────────────────────────────────────────────
@@ -22,25 +21,17 @@ export type DatosMovimientoConAprobacion = DatosMovimiento & {
 /* 
 Crear Movimiento de Inventario:
     Entrada: Un ID de inventario, una cantidad, una sede de origen, una sede de destino.
-    Seguridad: Se verifica que el usuario sea user.rol==GerenciaLocal. Se pide autenticación biométrica.
-    Proceso: Se registra el movimiento con aprobado: false. La transferencia real de stock ocurre al aprobar.
+    Seguridad: Se verifica que el usuario sea user.rol==Almacenista. La biometría la verifica el componente.
+    Proceso: Se registra el movimiento con aprobado: false. La aprobación corresponde a Gerencia Local.
     Salida: Una entrada a la colección de movimientoInventario en el Firestore.
 */
 export async function crearMovimientoInventario(datos: DatosMovimiento): Promise<void> {
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
 
-  // Seguridad: verificar rol GerenciaLocal
-  const esGerenciaLocal = await serviceAuth.verificarRolUsuario('gerenciaLocal')
-  if (!esGerenciaLocal) throw Error("Permisos insuficientes")
-
-  // Autenticación biométrica
-  const biometricAuth = await LocalAuthentication.authenticateAsync({
-    promptMessage: 'Autenticación biométrica requerida',
-  })
-  if (!biometricAuth.success) {
-    throw Error("Autenticación biométrica fallida")
-  }
+  // Seguridad: verificar rol Almacenista (registra la petición de movimiento)
+  const esAlmacenista = await serviceAuth.verificarRolUsuario('almacenista')
+  if (!esAlmacenista) throw Error("Permisos insuficientes")
 
   // Registrar el movimiento en la coleccion (aprobado: false por defecto)
   await firestore().collection('movimientoInventario').add({
@@ -59,7 +50,7 @@ export async function crearMovimientoInventario(datos: DatosMovimiento): Promise
 /* 
 Editar Movimiento (solo datos, no aprobacion):
     Entrada: Un ID de movimiento, los datos editables.
-    Seguridad: Se verifica que el usuario sea user.rol==GerenciaLocal. Se pide autenticación biométrica.
+    Seguridad: Se verifica que el usuario sea user.rol==Almacenista. La biometría la verifica el componente.
     Proceso: Se actualizan los datos del movimiento sin tocar el campo aprobado.
     Salida: Entrada actualizada en movimientoInventario.
 */
@@ -70,17 +61,9 @@ export async function editarMovimientoDatos(
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
 
-  // Seguridad: verificar rol GerenciaLocal
-  const esGerenciaLocal = await serviceAuth.verificarRolUsuario('GerenciaLocal')
-  if (!esGerenciaLocal) throw Error("Permisos insuficientes")
-
-  // Autenticación biométrica
-  const biometricAuth = await LocalAuthentication.authenticateAsync({
-    promptMessage: 'Autenticación biométrica requerida',
-  })
-  if (!biometricAuth.success) {
-    throw Error("Autenticación biométrica fallida")
-  }
+  // Seguridad: verificar rol Almacenista (edita la petición mientras no esté procesada)
+  const esAlmacenista = await serviceAuth.verificarRolUsuario('almacenista')
+  if (!esAlmacenista) throw Error("Permisos insuficientes")
 
   // Editar solo los datos, no se cambia aprobado
   await firestore()
@@ -99,9 +82,9 @@ export async function editarMovimientoDatos(
 }
 
 /* 
-Aprobar Movimiento (solo aprobacion, Almacenista):
+Aprobar Movimiento (solo aprobacion, GerenciaLocal):
     Entrada: Un ID de movimiento, booleano de aprobacion.
-    Seguridad: Se verifica que el usuario sea user.rol==Almacenista. Se pide autenticación biométrica.
+    Seguridad: Se verifica que el usuario sea user.rol==gerenciaLocal. La biometría la verifica el componente.
     Proceso: Al aprobar, se ejecuta la transferencia real de stock entre sedes.
     Salida: Movimiento actualizado con aprobado, aprobadoPor, aprobadoEn.
 */
@@ -112,17 +95,9 @@ export async function editarMovimientoAprobacion(
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
 
-  // Seguridad: verificar rol Almacenista
-  const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
-  if (!esAlmacenista) throw Error("Permisos insuficientes")
-
-  // Autenticación biométrica
-  const biometricAuth = await LocalAuthentication.authenticateAsync({
-    promptMessage: 'Autenticación biométrica requerida',
-  })
-  if (!biometricAuth.success) {
-    throw Error("Autenticación biométrica fallida")
-  }
+  // Seguridad: verificar rol GerenciaLocal (aprueba o deniega las peticiones del Almacenista)
+  const esGerenciaLocal = await serviceAuth.verificarRolUsuario('gerenciaLocal')
+  if (!esGerenciaLocal) throw Error("Permisos insuficientes")
 
   // Obtener el movimiento actual
   const movimientoDoc = await firestore()
