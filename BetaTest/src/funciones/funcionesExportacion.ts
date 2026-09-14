@@ -396,6 +396,8 @@ export async function exportarAsistencias(): Promise<void> {
       tipoSalida: a.tipoSalida === 'manual' ? 'Manual' : 'Automática',
       horas: a.horas || '',
       tiempoIncompleto: a.tiempoIncompleto ? 'Si' : 'No',
+      exonerado: a.diasExonerado ? 'Si' : 'No',
+      motivo: a.motivo || '',
       metodoMarcaje: a.metodoMarcaje || '',
     }
   })
@@ -415,6 +417,8 @@ export async function exportarAsistencias(): Promise<void> {
     { header: 'Tipo Salida', key: 'tipoSalida' },
     { header: 'Horas', key: 'horas' },
     { header: 'Tiempo Incompleto', key: 'tiempoIncompleto' },
+    { header: 'Exonerado', key: 'exonerado' },
+    { header: 'Motivo', key: 'motivo' },
     { header: 'Metodo Marcaje', key: 'metodoMarcaje' },
   ]
 

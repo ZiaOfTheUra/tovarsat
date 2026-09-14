@@ -92,7 +92,6 @@ android {
         applicationId 'com.TovarSat.Alpha'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        ndk {abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'}
         versionCode 1
         versionName "1.0.0"
 

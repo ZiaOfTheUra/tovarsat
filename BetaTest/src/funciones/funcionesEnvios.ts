@@ -33,6 +33,17 @@ export async function crearMovimientoInventario(datos: DatosMovimiento): Promise
   const esAlmacenista = await serviceAuth.verificarRolUsuario('almacenista')
   if (!esAlmacenista) throw Error("Permisos insuficientes")
 
+  // Validar que hay stock suficiente en la sede origen antes de declarar el envio
+  const invOrigenDoc = await firestore()
+    .collection('inventario')
+    .doc(datos.inventarioId)
+    .get()
+  if (!invOrigenDoc.exists) throw Error("Inventario de origen no encontrado")
+  const cantidadDisponible = invOrigenDoc.data()?.cantidad || 0
+  if (cantidadDisponible < datos.cantidad) {
+    throw Error("Stock insuficiente en la sede de origen")
+  }
+
   // Registrar el movimiento en la coleccion (aprobado: false por defecto)
   await firestore().collection('movimientoInventario').add({
     inventarioId: datos.inventarioId,
@@ -113,19 +124,20 @@ export async function editarMovimientoAprobacion(
 
   if (aprobado) {
     // Transferir stock: descontar de origen, sumar a destino
-    // Obtener inventario de origen
-    const invOrigenSnapshot = await firestore()
+    // Obtener inventario de origen directamente por su ID (el movimiento guarda
+    // el id del documento de inventario, no el modeloId)
+    const invOrigenRef = await firestore()
       .collection('inventario')
-      .where('modeloId', '==', movimiento.inventarioId)
-      .where('sedeId', '==', movimiento.sedeOrigenId)
+      .doc(movimiento.inventarioId)
       .get()
 
-    if (invOrigenSnapshot.empty) {
+    if (!invOrigenRef.exists) {
       throw Error("No hay inventario disponible en la sede de origen")
     }
 
-    const invOrigenDoc = invOrigenSnapshot.docs[0]
-    const invOrigen = invOrigenDoc.data()
+    const invOrigen = invOrigenRef.data()!
+    // el modeloId real del inventario de origen, para buscarlo en la sede destino
+    const modeloIdOrigen = invOrigen.modeloId
     const nuevaCantidadOrigen = invOrigen.cantidad - movimiento.cantidad
 
     if (nuevaCantidadOrigen < 0) {
@@ -135,7 +147,7 @@ export async function editarMovimientoAprobacion(
     // Descontar de origen
     await firestore()
       .collection('inventario')
-      .doc(invOrigenDoc.id)
+      .doc(movimiento.inventarioId)
       .update({
         cantidad: nuevaCantidadOrigen,
         disponible: nuevaCantidadOrigen > 0,
@@ -144,7 +156,7 @@ export async function editarMovimientoAprobacion(
     // Verificar si ya existe inventario del mismo modelo en sede destino
     const invDestinoSnapshot = await firestore()
       .collection('inventario')
-      .where('modeloId', '==', movimiento.inventarioId)
+      .where('modeloId', '==', modeloIdOrigen)
       .where('sedeId', '==', movimiento.sedeDestinoId)
       .get()
 
@@ -160,9 +172,9 @@ export async function editarMovimientoAprobacion(
           disponible: true,
         })
     } else {
-      // No existe → crear nuevo
+      // No existe → crear nuevo (con el modeloId real del inventario de origen)
       await firestore().collection('inventario').add({
-        modeloId: movimiento.inventarioId,
+        modeloId: modeloIdOrigen,
         cantidad: movimiento.cantidad,
         sedeId: movimiento.sedeDestinoId,
         disponible: true,

@@ -27,9 +27,8 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="tovarsatalpha"/>
-        <data android:scheme="exp+tovarsatalpha"/>
         <data android:scheme="tovarsat"/>
+        <data android:scheme="exp+tovarsatalpha"/>
       </intent-filter>
     </activity>
   </application>

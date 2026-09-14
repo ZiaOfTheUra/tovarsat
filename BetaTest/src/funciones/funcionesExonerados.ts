@@ -36,7 +36,7 @@ Crear Día Exonerado:
     Proceso: Se registra el día exonerado del usuario objetivo (Gerencia Local exonera a terceros).
              El adjunto se guarda como metadatos del archivo seleccionado (nombre, tipo, tamaño, uri).
              La subida real del archivo a un bucket (Firebase Storage) queda como mejora pendiente.
-    Salida: Una entrada en la colección de diasExonerados en el Firestore.
+    Salida: Una entrada en la colección de asistencias (con diasExonerado: true) en el Firestore.
 */
 export async function crearDiaExonerado(datos: DatosDiaExonerado): Promise<{ id: string; message: string }> {
   const usuario = auth().currentUser
@@ -54,10 +54,22 @@ export async function crearDiaExonerado(datos: DatosDiaExonerado): Promise<{ id:
     throw Error("Autenticación biométrica fallida")
   }
 
-  // Registrar el día exonerado en la colección
-  const ref = await firestore().collection('diasExonerados').add({
-    uidUsuario: datos.uidUsuario,
-    fecha: datos.fecha,
+  // Registrar el día exonerado directamente en la colección de asistencias
+  // (con diasExonerado: true) para que aparezca en verAsistencias y en la exportación
+  const [anio, mes, dia] = datos.fecha.split('-').map(Number)
+  const fechaExonerada = new Date(anio, mes - 1, dia, 8, 0, 0)
+
+  const ref = await firestore().collection('asistencias').add({
+    uid: datos.uidUsuario,
+    turno: 'manana',
+    fechaEntrada: firestore.Timestamp.fromDate(fechaExonerada),
+    fechaSalida: firestore.Timestamp.fromDate(fechaExonerada),
+    fechaSalidaReal: null,
+    tipoSalida: 'automatica',
+    horas: 0,
+    tiempoIncompleto: false,
+    diasExonerado: true,
+    metodoMarcaje: 'exoneracion',
     motivo: datos.motivo,
     justificativoNombre: datos.justificativo?.nombre || '',
     justificativoMimeType: datos.justificativo?.mimeType || '',
@@ -112,8 +124,9 @@ export async function listarDiasExonerados(): Promise<DiaExonerado[]> {
     for (let i = 0; i < listaFiltrada.length; i += 10) {
       const grupo = listaFiltrada.slice(i, i + 10)
       const snap = await firestore()
-        .collection('diasExonerados')
-        .where('uidUsuario', 'in', grupo)
+        .collection('asistencias')
+        .where('uid', 'in', grupo)
+        .where('diasExonerado', '==', true)
         .get()
       docsAcumulados.push(...snap.docs)
     }
@@ -122,19 +135,21 @@ export async function listarDiasExonerados(): Promise<DiaExonerado[]> {
     // de otra forma solamente los del propio usuario
     mapaNombres[usuario.uid] = datosUsuario?.nombre || ''
     const snap = await firestore()
-      .collection('diasExonerados')
-      .where('uidUsuario', '==', usuario.uid)
+      .collection('asistencias')
+      .where('uid', '==', usuario.uid)
+      .where('diasExonerado', '==', true)
       .get()
     listaExonerados = snap.docs
   }
 
   return listaExonerados.map(doc => {
     const d = doc.data()
+    const fechaEntrada = d.fechaEntrada?.toDate?.()
     return {
       id: doc.id,
-      uidUsuario: d.uidUsuario || '',
-      nombre: mapaNombres[d.uidUsuario] || '',
-      fecha: d.fecha || '',
+      uidUsuario: d.uid || '',
+      nombre: mapaNombres[d.uid] || '',
+      fecha: fechaEntrada ? fechaEntrada.toISOString().split('T')[0] : '',
       motivo: d.motivo || '',
       justificativoNombre: d.justificativoNombre || '',
     }
@@ -146,7 +161,7 @@ Eliminar Día Exonerado:
     Entrada: Un ID de día exonerado.
     Seguridad: Se verifica que el usuario sea user.rol==gerenciaLocal. Se pide autenticación biométrica.
     Proceso: Se elimina el documento del día exonerado en Firestore.
-    Salida: El documento eliminado de la colección de diasExonerados en el Firestore.
+    Salida: El documento eliminado de la colección de asistencias en el Firestore.
 */
 export async function eliminarDiaExonerado(exoneradoId: string): Promise<{ message: string }> {
   const usuario = auth().currentUser
@@ -164,7 +179,7 @@ export async function eliminarDiaExonerado(exoneradoId: string): Promise<{ messa
     throw Error("Autenticación biométrica fallida")
   }
 
-  await firestore().collection('diasExonerados').doc(exoneradoId).delete()
+  await firestore().collection('asistencias').doc(exoneradoId).delete()
 
   console.log("Día exonerado eliminado correctamente")
   return { message: 'Día exonerado eliminado correctamente' }
@@ -191,8 +206,11 @@ export async function obtenerUsuariosSede(): Promise<{ label: string; value: str
     .where('sede', '==', sedeRequest)
     .get()
 
-  return snapshot.docs.map(doc => ({
-    label: doc.data().nombre || 'Sin nombre',
-    value: doc.id,
-  }))
+  // excluir al propio gerente para que no se exonere a sí mismo
+  return snapshot.docs
+    .filter(doc => doc.id !== usuario.uid)
+    .map(doc => ({
+      label: doc.data().nombre || 'Sin nombre',
+      value: doc.id,
+    }))
 }

@@ -104,21 +104,25 @@ export default function AsistenciaScreen() {
 
   // ─── Exonerar día (solo gerenciaLocal) ────────────────────
   const abrirModalExonerar = async () => {
+    console.log('[exonerar] abriendo modal')
     setUidExonerado('')
     setFechaExonerado('')
     setMotivoExonerado('')
     setJustificativo(null)
     setModalExonerarVisible(true)
     const usuarios = await obtenerUsuariosSede()
+    console.log('[exonerar] usuarios cargados:', usuarios.length)
     setOpcionesUsuarios(usuarios)
   }
 
   // Selecciona el archivo de justificativo con expo-document-picker
   const adjuntarJustificativo = async () => {
+    console.log('[exonerar] abriendo selector de archivos')
     let DocumentPicker: any
     try {
       DocumentPicker = require('expo-document-picker')
     } catch (err) {
+      console.log('[exonerar] no se cargo el document picker')
       Alert.alert('Error', 'No se pudo cargar el selector de archivos. Reinstala la app.')
       return
     }
@@ -127,8 +131,12 @@ export default function AsistenciaScreen() {
         type: ['application/pdf', 'image/*'],
         copyToCacheDirectory: true,
       })
-      if (resultado.canceled) return
+      if (resultado.canceled) {
+        console.log('[exonerar] seleccion cancelada')
+        return
+      }
       const archivo = resultado.assets[0]
+      console.log('[exonerar] archivo seleccionado:', archivo.name, archivo.size, archivo.mimeType)
       setJustificativo({
         nombre: archivo.name || '',
         mimeType: archivo.mimeType || '',
@@ -136,12 +144,15 @@ export default function AsistenciaScreen() {
         uri: archivo.uri || '',
       })
     } catch (err) {
+      console.log('[exonerar] error al seleccionar archivo:', err)
       Alert.alert('Error', 'No se pudo seleccionar el archivo')
     }
   }
 
   const exonerarDia = async () => {
+    console.log('[exonerar] intentando exonerar:', { uidExonerado, fechaExonerado, motivoExonerado, tieneJustificativo: !!justificativo })
     if (!uidExonerado || !fechaExonerado || !motivoExonerado) {
+      console.log('[exonerar] faltan campos requeridos')
       Alert.alert('Error', 'Empleado, Fecha y Motivo son requeridos')
       return
     }
@@ -151,6 +162,7 @@ export default function AsistenciaScreen() {
       // el prompt biometrico no compita por el foco con el modal ni el teclado
       setModalExonerarVisible(false)
       Keyboard.dismiss()
+      console.log('[exonerar] modal cerrado, pidiendo huella')
 
       await crearDiaExonerado({
         uidUsuario: uidExonerado,
@@ -158,6 +170,7 @@ export default function AsistenciaScreen() {
         motivo: motivoExonerado,
         justificativo: justificativo || undefined,
       })
+      console.log('[exonerar] exoneracion creada correctamente')
       Alert.alert('Éxito', 'Día exonerado correctamente')
       setUidExonerado('')
       setFechaExonerado('')
@@ -167,9 +180,10 @@ export default function AsistenciaScreen() {
       setAsistencias(nuevas)
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+      console.log('[exonerar] error:', errorMessage)
       Alert.alert('Error', errorMessage)
-      console.error('[ASISTENCIA] Error:', error)
     } finally {
+      console.log('[exonerar] finalmente, exonerando=false')
       setExonerando(false)
     }
   }
@@ -204,8 +218,7 @@ export default function AsistenciaScreen() {
       <BarraSuperior title="TovarSAT" />
 
       <View style={screenStyles.contenidoDesplazamiento}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>
+        <Text style={[screenStyles.tituloSeccion, { color: theme.onSurface }]}>
             Asistencias
           </Text>
           <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -244,7 +257,19 @@ export default function AsistenciaScreen() {
               </Text>
             </Pressable>
           </View>
-        </View>
+
+        {esGerencia && (
+          <Pressable
+            onPress={abrirModalExonerar}
+            disabled={exonerando}
+            style={[screenStyles.botonAccion, { backgroundColor: theme.primary, marginTop: 8, opacity: exonerando ? 0.6 : 1 }]}
+          >
+            <MaterialIcons name="person-add" size={20} color={theme.onPrimary} />
+            <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
+              {exonerando ? 'Verificando...' : 'Exonerar'}
+            </Text>
+          </Pressable>
+        )}
 
         {cargando ? (
           <ActivityIndicator size="large" color={theme.primary} />
@@ -255,19 +280,6 @@ export default function AsistenciaScreen() {
             keyExtractor={(item) => item.id}
             style={{ marginTop: 16 }}
           />
-        )}
-
-        {esGerencia && (
-          <Pressable
-            onPress={abrirModalExonerar}
-            disabled={exonerando}
-            style={[screenStyles.botonAccion, { backgroundColor: theme.primary, marginTop: 16, opacity: exonerando ? 0.6 : 1 }]}
-          >
-            <MaterialIcons name="person-add" size={20} color={theme.onPrimary} />
-            <Text style={[screenStyles.etiquetaAccion, { color: theme.onPrimary }]}>
-              {exonerando ? 'Verificando...' : 'Exonerar'}
-            </Text>
-          </Pressable>
         )}
       </View>
 

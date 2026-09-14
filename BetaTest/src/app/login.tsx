@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { View, Text, TextInput, Pressable, ScrollView, ActivityIndicator, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
+// insets para no dibujar bajo las barras del sistema (estado arriba, navegacion abajo)
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from '@/theme/useTheme'
 import { screenStyles } from '@/theme/screenStyles'
 import { iniciarSesion } from '@/services/auth'
@@ -10,6 +12,8 @@ import firestore from '@react-native-firebase/firestore'
 export default function LoginScreen() {
   const theme = useTheme()
   const router = useRouter()
+  // mismo insets del provider, aqui para empujar el contenido centrado fuera de las barras del sistema
+  const insets = useSafeAreaInsets()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mostrarPassword, setMostrarPassword] = useState(false)
@@ -64,7 +68,9 @@ export default function LoginScreen() {
     <ScrollView
       contentContainerStyle={[
         screenStyles.contenedorLogin,
-        { backgroundColor: theme.background },
+        // paddingTop/paddingBottom explicitos pisan el paddingVertical 24 del style base
+        // y le suman los insets arriba y abajo para que el login no quede tapado
+        { backgroundColor: theme.background, paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 },
       ]}
       keyboardShouldPersistTaps="handled"
     >

@@ -1,9 +1,14 @@
 import { Tabs } from 'expo-router'
 import { MaterialIcons } from '@expo/vector-icons'
+// insets nos dice cuanto espacio ocupan las barras del sistema (estado arriba, navegacion abajo)
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from '@/theme/useTheme'
 
 export default function TabsLayout() {
   const theme = useTheme()
+  // insets.bottom es el alto de la barra de navegacion de android (los botones atras/inicio/abrir)
+  // en la APK esos botones tapan la tabBar, asi que la agrandamos para que no pase
+  const insets = useSafeAreaInsets()
 
   return (
     <Tabs
@@ -14,8 +19,9 @@ export default function TabsLayout() {
           borderTopColor: theme.outlineVariant,
           borderTopWidth: 1,
           paddingTop: 8,
-          height: 80,
-          paddingBottom: 16
+          // le sumamos insets.bottom a la altura y al padding para que los botones del sistema queden DEBAJO
+          height: 80 + insets.bottom,
+          paddingBottom: 16 + insets.bottom
         },
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: theme.onSurfaceVariant,

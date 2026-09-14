@@ -255,20 +255,26 @@ export async function verAsistencias(): Promise<AsistenciaLista[]> {
 
   return asistenciasSnapshot.docs.map(doc=>{
     const data = doc.data()
+    // los registros exonerados no tienen salida real; se muestran con la fecha del dia
+    const esExonerado = data.diasExonerado === true
     // en la vista mostramos la salida real si el usuario ya la marco, si no la prevista
     const fechaSalidaFinal = data.fechaSalidaReal
       ? data.fechaSalidaReal.toDate()
-      : data.fechaSalida.toDate()
+      : data.fechaSalida?.toDate()
     return {
       id: doc.id,
       // usamos el mapa de nombres para el nombre real del usuario de cada fila
       nombre: mapaNombres[data.uid] || '',
       usuarioID: data.uid,
       turno: data.turno || '',
-      fechaEntrada: formatHora(data.fechaEntrada.toDate()),
-      fechaSalida: formatHora(fechaSalidaFinal),
-      tipoSalida: data.tipoSalida || 'automatica',
-      horasTrabajadas: data.horas || 0}
+      fechaEntrada: esExonerado
+        ? data.fechaEntrada.toDate().toLocaleDateString()
+        : formatHora(data.fechaEntrada.toDate()),
+      fechaSalida: esExonerado ? 'Exonerado' : (fechaSalidaFinal ? formatHora(fechaSalidaFinal) : ''),
+      tipoSalida: esExonerado ? 'exonerada' : (data.tipoSalida || 'automatica'),
+      horasTrabajadas: data.horas || 0,
+      diasExonerado: esExonerado,
+      motivo: data.motivo || ''}
     }
   )
 }
@@ -284,4 +290,6 @@ export interface AsistenciaLista {
   fechaSalida: string
   tipoSalida: string
   horasTrabajadas: number
+  diasExonerado: boolean
+  motivo: string
 }

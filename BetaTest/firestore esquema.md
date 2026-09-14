@@ -112,8 +112,14 @@ Usada por: `funcionesAsistencia.ts`, `funcionesExportacion.ts` (solo lectura).
 | `tipoSalida` | string | `'automatica'` (turno abierto) \| `'manual'` (turno cerrado al marcar salida) |
 | `horas` | number | Horas trabajadas del turno. Al crear: contra la salida prevista. Al marcar salida: recalculadas contra `fechaSalidaReal` |
 | `tiempoIncompleto` | boolean | `true` si `horas < 3` (por turno). Reemplaza al antiguo `entradaTardia` |
-| `diasExonerado` | boolean | Reservado para Fase 3. Siempre `false` al crear |
-| `metodoMarcaje` | string | Siempre `'biometria'` |
+| `diasExonerado` | boolean | `true` si el registro es una exoneración creada por `crearDiaExonerado()` (Fase 3 implementada) |
+| `motivo` | string | Solo en registros exonerados: razón del permiso (ej. reposo médico) |
+| `metodoMarcaje` | string | `'biometria'` (asistencia normal) \\| `'exoneracion'` (registro exonerado) |
+| `justificativoNombre` | string | Solo en registros exonerados: nombre del archivo adjunto (vacío si no adjuntó) |
+| `justificativoMimeType` | string | Solo en registros exonerados: tipo MIME del adjunto |
+| `justificativoTamanio` | number | Solo en registros exonerados: tamaño en bytes del adjunto |
+| `justificativoUri` | string | Solo en registros exonerados: URI local del adjunto (`expo-document-picker`) |
+| `creadoPor` | string | Solo en registros exonerados: UID del Gerente Local que registró la exoneración |
 | `creadoEn` | Timestamp | Server time al crear |
 
 **Reglas en el código:**
@@ -128,23 +134,19 @@ Usada por: `funcionesAsistencia.ts`, `funcionesExportacion.ts` (solo lectura).
 
 ---
 
-## Colección `diasExonerados`
-ID automático.
-Usada por: `funcionesExonerados.ts`.
+## Exoneraciones (Fase 3 — implementada)
 
-**Schema (Fase 3):** días exonerados de asistencia con justificativo. Gerencia Local exonera a **terceros** (de su sede).
+Las exoneraciones ya **no** usan una colección separada: `crearDiaExonerado()` (en `funcionesExonerados.ts`)
+inserta un documento directamente en `asistencias` con `diasExonerado: true`, `metodoMarcaje: 'exoneracion'`,
+`motivo` y los metadatos del justificativo. Así aparecen automáticamente en `verAsistencias()` y en
+`exportarAsistencias()` (columnas `Exonerado` y `Motivo`). `listarDiasExonerados()` consulta `asistencias`
+con `where('diasExonerado', '==', true)`, y `eliminarDiaExonerado()` borra el doc por id de `asistencias`.
 
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `uidUsuario` | string | UID del empleado exonerado |
-| `fecha` | string | Día exonerado en formato `YYYY-MM-DD` (día calendario, coincide con `toISOString().split('T')[0]`) |
-| `motivo` | string | Razón del permiso (ej. reposo médico) |
-| `justificativoNombre` | string | Nombre del archivo de justificativo seleccionado (vacío si no adjuntó) |
-| `justificativoMimeType` | string | Tipo MIME del archivo adjunto |
-| `justificativoTamanio` | number | Tamaño en bytes del archivo adjunto |
-| `justificativoUri` | string | URI local del archivo capturado con `expo-document-picker` |
-| `creadoPor` | string | UID del Gerente Local que registró la exoneración |
-| `creadoEn` | Timestamp | Server time al crear |
+En un registro exonerado: `fechaEntrada`/`fechaSalida` = el día exonerado (08:00), `fechaSalidaReal` = `null`,
+`horas` = 0, `tiempoIncompleto` = `false`, `tipoSalida` = `'automatica'`, `turno` = `'manana'` (día completo).
+El campo `fecha` string (`YYYY-MM-DD`) ya no se guarda; se deriva de `fechaEntrada`.
+
+`obtenerUsuariosSede()` excluye al propio gerente para que no se exonere a sí mismo.
 
 > ⚠️ Pendiente (mejora futura): `justificativoUri` guarda la URI **local** del archivo seleccionado, no una URL accesible. Para subir el documento real a un bucket se debe instalar `@react-native-firebase/storage` (módulo nativo, requiere rebuild del dev client) y guardar la URL del bucket. `expo-document-picker` ya está instalado y configurado en `app.json`.
 

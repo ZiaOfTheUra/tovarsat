@@ -1,4 +1,5 @@
 import { View, Text, Pressable } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from '@/theme/useTheme'
 import { MaterialIcons } from '@expo/vector-icons'
 
@@ -10,10 +11,16 @@ interface BarraSuperiorProps {
 
 export function BarraSuperior({ title, onSearchPress, showAvatar = true }: Readonly<BarraSuperiorProps>) {
   const theme = useTheme()
+  // insets.top es el alto de la barra de estado (donde sale la hora y la bateria)
+  // sin esto, en la APK el titulo queda tapado por esa barra
+  const insets = useSafeAreaInsets()
 
   return (
+    // sumamos insets.top al alto para que la barra empiece DEBAJO de la barra de estado
+    // y le ponemos paddingTop para que el contenido quede alineado dentro del espacio que sobra
     <View style={{
-      height: 56, width: '100%', zIndex: 40,
+      height: 56 + insets.top, width: '100%', zIndex: 40,
+      paddingTop: insets.top,
       backgroundColor: theme.surface,
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.05, shadowRadius: 2, elevation: 2,
