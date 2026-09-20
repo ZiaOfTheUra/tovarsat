@@ -23,6 +23,35 @@ export type DatosInventario = {
   sedeId: string
 }
 
+// ─── VALIDACIONES ───────────────────────────────────────────
+// Verifican que los datos vengan con contenido ANTES de pedir biometría o tocar
+// Firestore, para abortar temprano sin gastar el prompt biométrico.
+
+// Valida que un campo de texto no sea null, vacío ni solo espacios
+function validarNoVacio(valor: string | undefined, nombre: string): void {
+  if (!valor || !valor.trim()) {
+    throw Error("El campo '" + nombre + "' no puede estar vacío")
+  }
+}
+
+// Valida los 5 campos de texto de un modelo
+function validarDatosModelo(datos: DatosModelo): void {
+  validarNoVacio(datos.codigoModelo, 'Código de modelo')
+  validarNoVacio(datos.nombreIdentificador, 'Nombre identificador')
+  validarNoVacio(datos.marca, 'Marca')
+  validarNoVacio(datos.descripcion, 'Descripción')
+  validarNoVacio(datos.tecnologias, 'Tecnologías')
+}
+
+// Valida los datos de una entrada de inventario (IDs no vacíos, cantidad válida)
+function validarDatosInventario(datos: DatosInventario): void {
+  validarNoVacio(datos.modeloId, 'Modelo')
+  validarNoVacio(datos.sedeId, 'Sede')
+  if (!Number.isFinite(datos.cantidad) || datos.cantidad < 0) {
+    throw Error("La cantidad debe ser un número mayor o igual a 0")
+  }
+}
+
 /* 
 Crear Modelo: 
     Entrada: Un codigo de modelo (string, unico), una descripción breve (string), una descripción de las tecnologías relevantes (string), una Marca, un nombre identificador (string)
@@ -34,6 +63,9 @@ Crear Modelo:
 export async function guardarModelo(  datos: DatosModelo,  limpiarFormulario?: () => void): Promise<void> {
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
+
+  // Validar que todos los campos del formulario vengan con contenido
+  validarDatosModelo(datos)
 
   // Seguridad: verificar rol Almacenista
   const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
@@ -102,6 +134,9 @@ export async function editarModelo(
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
 
+  // Validar que todos los campos del formulario vengan con contenido
+  validarDatosModelo(datos)
+
   // Seguridad: verificar rol Almacenista
   const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
   if (!esAlmacenista) throw Error("Permisos insuficientes")
@@ -159,6 +194,9 @@ export async function crearInventario(datos: DatosInventario): Promise<void> {
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
 
+  // Validar que los datos vengan con contenido y cantidad válida
+  validarDatosInventario(datos)
+
   // Seguridad: verificar rol Almacenista
   const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
   if (!esAlmacenista) throw Error("Permisos insuficientes")
@@ -208,6 +246,9 @@ export async function editarInventario(
 ): Promise<void> {
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
+
+  // Validar que los datos vengan con contenido y cantidad válida
+  validarDatosInventario(datos)
 
   // Seguridad: verificar rol Almacenista
   const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
@@ -267,6 +308,9 @@ export async function eliminarModelo(modeloId: string): Promise<void> {
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
 
+  // Validar que el ID venga con contenido
+  validarNoVacio(modeloId, 'ID de modelo')
+
   // Seguridad: verificar rol Almacenista
   const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')
   if (!esAlmacenista) throw Error("Permisos insuficientes")
@@ -294,6 +338,9 @@ Eliminar Inventario:
 export async function eliminarInventario(inventarioId: string): Promise<void> {
   const usuario = auth().currentUser
   if (!usuario) throw Error("Usuario No Autenticado")
+
+  // Validar que el ID venga con contenido
+  validarNoVacio(inventarioId, 'ID de inventario')
 
   // Seguridad: verificar rol Almacenista
   const esAlmacenista = await serviceAuth.verificarRolUsuario('Almacenista')

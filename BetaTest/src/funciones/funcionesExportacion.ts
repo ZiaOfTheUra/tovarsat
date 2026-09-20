@@ -431,8 +431,11 @@ export async function exportarAsistencias(): Promise<void> {
 Exportar Envios:
     Entrada: Ninguna, toma todos los movimientos de inventario de Firestore.
     Seguridad: Se verifica que el usuario sea user.rol==gerenciaLocal.
-    Proceso: Obtiene movimientos, une datos de sede origen/destino, modelo, creadoPor y aprobadoPor
-             (resolviendo UIDs a nombres de usuario), formatea Timestamps, y exporta a Excel.
+    Proceso: Obtiene movimientos, une datos de sede origen/destino, modelo (nombre, marca, codigo),
+             creadoPor/movidoPor, editadoPor y aprobadoPor (resolviendo UIDs a nombres de usuario),
+             formatea Timestamps, y exporta a Excel.
+    Estandar: Se exportan TODOS los campos del documento; el unico dato excluido es el UID del
+              documento en si, porque no aporta informacion al reporte.
     Salida: Un archivo .xlsx con todos los envios.
 */
 export async function exportarEnvios(): Promise<void> {
@@ -474,16 +477,29 @@ export async function exportarEnvios(): Promise<void> {
     const modelo = itemInventario ? modelos.find((mod: any) => mod.id === itemInventario.modeloId) : null
     const creadoPor = usuarios.find((u: any) => u.id === m.creadoPor)
     const aprobadoPor = usuarios.find((u: any) => u.id === m.aprobadoPor)
+    const editadoPor = usuarios.find((u: any) => u.id === m.editadoPor)
 
+    // Estandar: exportar TODOS los campos del documento, resolviendo UIDs a
+    // nombres legibles. Lo unico que se excluye es el UID del documento en si,
+    // porque no aporta informacion al reporte.
     return {
       sedeOrigen: sedeOrigen ? sedeOrigen.nombre : 'Sin sede',
       sedeDestino: sedeDestino ? sedeDestino.nombre : 'Sin sede',
       modelo: modelo ? modelo.nombreIdentificador : 'Sin modelo',
+      marca: modelo ? modelo.marca : 'Sin marca',
+      codigoModelo: modelo ? modelo.codigoModelo : 'Sin código',
       cantidad: m.cantidad || 0,
-      creadoPor: creadoPor ? creadoPor.nombre : 'Sin creador',
+      estadoAprobacion: m.aprobado ? 'Aprobado' : (m.aprobadoPor ? 'Denegado' : 'Sin Procesar'),
       aprobado: m.aprobado ? 'Si' : 'No',
-      aprobadoPor: aprobadoPor ? aprobadoPor.nombre : 'Sin aprobador',
+      // Quien lo movio (el Almacenista que declaro el envio)
+      creadoPor: creadoPor ? creadoPor.nombre : 'Sin creador',
       creadoEn: formatearTimestamp(m.creadoEn),
+      // Quien lo edito (si nadie lo edito, queda vacio)
+      editadoPor: editadoPor ? editadoPor.nombre : 'Sin ediciones',
+      editadoEn: formatearTimestamp(m.editadoEn),
+      // Quien lo aprobo o denego (Gerencia Local)
+      aprobadoPor: aprobadoPor ? aprobadoPor.nombre : 'Sin procesar',
+      aprobadoEn: formatearTimestamp(m.aprobadoEn),
     }
   })
 
@@ -496,11 +512,17 @@ export async function exportarEnvios(): Promise<void> {
     { header: 'Sede Origen', key: 'sedeOrigen' },
     { header: 'Sede Destino', key: 'sedeDestino' },
     { header: 'Modelo', key: 'modelo' },
+    { header: 'Marca', key: 'marca' },
+    { header: 'Código', key: 'codigoModelo' },
     { header: 'Cantidad', key: 'cantidad' },
-    { header: 'Creado Por', key: 'creadoPor' },
+    { header: 'Estado', key: 'estadoAprobacion' },
     { header: 'Aprobado', key: 'aprobado' },
-    { header: 'Aprobado Por', key: 'aprobadoPor' },
+    { header: 'Movido Por', key: 'creadoPor' },
     { header: 'Creado En', key: 'creadoEn' },
+    { header: 'Editado Por', key: 'editadoPor' },
+    { header: 'Editado En', key: 'editadoEn' },
+    { header: 'Procesado Por', key: 'aprobadoPor' },
+    { header: 'Procesado En', key: 'aprobadoEn' },
   ]
 
   console.log('[exportarenvios] columnas:', JSON.stringify(columnas))
