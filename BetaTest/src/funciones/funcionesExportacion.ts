@@ -490,7 +490,6 @@ export async function exportarEnvios(): Promise<void> {
       codigoModelo: modelo ? modelo.codigoModelo : 'Sin código',
       cantidad: m.cantidad || 0,
       estadoAprobacion: m.aprobado ? 'Aprobado' : (m.aprobadoPor ? 'Denegado' : 'Sin Procesar'),
-      aprobado: m.aprobado ? 'Si' : 'No',
       // Quien lo movio (el Almacenista que declaro el envio)
       creadoPor: creadoPor ? creadoPor.nombre : 'Sin creador',
       creadoEn: formatearTimestamp(m.creadoEn),
@@ -516,7 +515,6 @@ export async function exportarEnvios(): Promise<void> {
     { header: 'Código', key: 'codigoModelo' },
     { header: 'Cantidad', key: 'cantidad' },
     { header: 'Estado', key: 'estadoAprobacion' },
-    { header: 'Aprobado', key: 'aprobado' },
     { header: 'Movido Por', key: 'creadoPor' },
     { header: 'Creado En', key: 'creadoEn' },
     { header: 'Editado Por', key: 'editadoPor' },
